@@ -23,6 +23,8 @@
         <property name="hbm2ddl.auto">create</property>
 
         <!-- Mapping classes -->
-
+        <mapping class="nhom8.qlgiaodichnhadat.entities.GiaoDich"/>
+        <mapping class="nhom8.qlgiaodichnhadat.entities.GiaoDichDat"/>
+        <mapping class="nhom8.qlgiaodichnhadat.entities.GiaoDichNha"/>
     </session-factory>
 </hibernate-configuration>
