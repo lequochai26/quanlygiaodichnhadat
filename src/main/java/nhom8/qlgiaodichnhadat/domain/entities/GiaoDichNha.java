@@ -1,4 +1,4 @@
-package nhom8.qlgiaodichnhadat.entities;
+package nhom8.qlgiaodichnhadat.domain.entities;
 
 import java.util.Date;
 
@@ -6,7 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import nhom8.qlgiaodichnhadat.entities.enums.LoaiNha;
+import nhom8.qlgiaodichnhadat.domain.entities.enums.LoaiNha;
 
 @Entity (name = "GiaoDichNha")
 @Table (name = "GiaoDich")
@@ -42,6 +42,43 @@ public class GiaoDichNha extends GiaoDich {
         }
 
         return 0;
+    }
+
+    @Override
+    public boolean matches(String keyWord) {
+        // Lowercase keyWord
+        keyWord = keyWord.toLowerCase();
+
+        // Turn informations into lowercase strings
+        String loaiNha = (
+            this.loaiNha != null ?
+            this.loaiNha.toString().toLowerCase() :
+            ""
+        );
+        String diaChi = (
+            this.diaChi != null ?
+            this.diaChi.toLowerCase() :
+            ""
+        );
+
+        // Return
+        return (
+            loaiNha.contains(keyWord) ||
+            diaChi.contains(keyWord) ||
+            super.matches(keyWord)
+        );
+    }
+
+    @Override
+    public String toString() {
+        return "GiaoDichNha{" +
+                "maGiaoDich='" + maGiaoDich + '\'' +
+                ", ngayGiaoDich='" + ngayGiaoDich + '\'' +
+                ", donGia=" + donGia +
+                ", dienTich=" + dienTich +
+                ", loaiNha='" + loaiNha + '\'' +
+                ", diaChi='" + diaChi + '\'' +
+                '}';
     }
 
     public LoaiNha getLoaiNha() {

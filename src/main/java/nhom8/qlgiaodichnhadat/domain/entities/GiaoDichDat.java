@@ -1,4 +1,4 @@
-package nhom8.qlgiaodichnhadat.entities;
+package nhom8.qlgiaodichnhadat.domain.entities;
 
 import java.util.Date;
 
@@ -6,7 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import nhom8.qlgiaodichnhadat.entities.enums.LoaiDat;
+import nhom8.qlgiaodichnhadat.domain.entities.enums.LoaiDat;
 
 @Entity (name = "GiaoDichDat")
 @Table (name = "GiaoDich")
@@ -38,6 +38,36 @@ public class GiaoDichDat extends GiaoDich {
         }
 
         return 0;
+    }
+
+    @Override
+    public boolean matches(String keyWord) {
+        // Lowercase keyWord
+        keyWord = keyWord.toLowerCase();
+
+        // Turn informations into lowercase strings
+        String loaiDat = (
+            this.loaiDat != null ?
+            this.loaiDat.toString().toLowerCase() :
+            ""
+        );
+
+        // Return
+        return (
+            super.matches(keyWord) ||
+            loaiDat.contains(keyWord)
+        );
+    }
+
+    @Override
+    public String toString() {
+        return "GiaoDichDat{" +
+                "maGiaoDich='" + maGiaoDich + '\'' +
+                ", ngayGiaoDich='" + ngayGiaoDich + '\'' +
+                ", donGia=" + donGia +
+                ", dienTich=" + dienTich +
+                ", loaiDat='" + loaiDat + '\'' +
+                '}';
     }
 
     public LoaiDat getLoaiDat() {

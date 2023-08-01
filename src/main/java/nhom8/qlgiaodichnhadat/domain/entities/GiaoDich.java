@@ -1,4 +1,4 @@
-package nhom8.qlgiaodichnhadat.entities;
+package nhom8.qlgiaodichnhadat.domain.entities;
 
 import java.util.Date;
 
@@ -38,6 +38,43 @@ public abstract class GiaoDich {
 
     // METHODS:
     public abstract double tinhThanhTien();
+
+    public boolean matches(String keyWord) {
+        // Check keyWord
+        if (keyWord == null) {
+            return false;
+        }
+
+        // Lower case keyword
+        keyWord = keyWord.toLowerCase();
+
+        // Turn informations into lowercase strings
+        String maGiaoDich = "" + this.maGiaoDich;
+        String ngayGiaoDich = (
+            this.ngayGiaoDich != null ?
+            this.ngayGiaoDich.toString().toLowerCase() :
+            ""
+        );
+        String donGia = "" + this.donGia;
+        String dienTich = "" + this.dienTich;
+
+        return (
+            maGiaoDich.contains(keyWord) ||
+            ngayGiaoDich.contains(keyWord) ||
+            donGia.contains(keyWord) ||
+            dienTich.contains(keyWord)
+        );
+    }
+
+    @Override
+    public String toString() {
+        return "GiaoDich{" +
+                "maGiaoDich='" + maGiaoDich + '\'' +
+                ", ngayGiaoDich='" + ngayGiaoDich + '\'' +
+                ", donGia=" + donGia +
+                ", dienTich=" + dienTich +
+                '}';
+    }
 
     public int getMaGiaoDich() {
         return maGiaoDich;

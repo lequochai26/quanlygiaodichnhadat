@@ -20,11 +20,11 @@
             Allow Hibernate to automatically build database's tables
             based on mapping informations
         -->
-        <property name="hbm2ddl.auto">create</property>
+        <property name="hbm2ddl.auto">update</property>
 
         <!-- Mapping classes -->
-        <mapping class="nhom8.qlgiaodichnhadat.entities.GiaoDich"/>
-        <mapping class="nhom8.qlgiaodichnhadat.entities.GiaoDichDat"/>
-        <mapping class="nhom8.qlgiaodichnhadat.entities.GiaoDichNha"/>
+        <mapping class="nhom8.qlgiaodichnhadat.domain.entities.GiaoDich"/>
+        <mapping class="nhom8.qlgiaodichnhadat.domain.entities.GiaoDichDat"/>
+        <mapping class="nhom8.qlgiaodichnhadat.domain.entities.GiaoDichNha"/>
     </session-factory>
 </hibernate-configuration>
