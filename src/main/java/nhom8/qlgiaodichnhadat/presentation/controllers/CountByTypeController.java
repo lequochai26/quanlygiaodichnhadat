@@ -8,13 +8,13 @@ import javax.swing.JOptionPane;
 import nhom8.qlgiaodichnhadat.domain.IGiaoDichManager;
 import nhom8.qlgiaodichnhadat.presentation.views.MainWindow;
 
-public class CountGiaoDichByTypeController implements ActionListener {
+public class CountByTypeController implements ActionListener {
     // FIELDS:
     private MainWindow mainWindow;
     private Class type;
 
     // CONSTRUCTORS:
-    public CountGiaoDichByTypeController(MainWindow mainWindow, Class type) {
+    public CountByTypeController(MainWindow mainWindow, Class type) {
         this.mainWindow = mainWindow;
         this.type = type;
     }

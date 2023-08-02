@@ -11,6 +11,9 @@ import javax.swing.JMenuItem;
 import java.awt.Dimension;
 import javax.swing.JScrollPane;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
@@ -32,7 +35,7 @@ import nhom8.qlgiaodichnhadat.presentation.controllers.AverageAllController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.AverageByTypeController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.CloseController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.CountAllController;
-import nhom8.qlgiaodichnhadat.presentation.controllers.CountGiaoDichByTypeController;
+import nhom8.qlgiaodichnhadat.presentation.controllers.CountByTypeController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.DataSelectedController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.LoaiGiaoDichSelectedController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.RefreshController;
@@ -182,13 +185,13 @@ public class MainWindow extends JFrame implements GUI {
         mniSoLuongGDDat = new JMenuItem("Giao dịch đất");
         mnSoLuong.add(mniSoLuongGDDat);
         mniSoLuongGDDat.addActionListener(
-            new CountGiaoDichByTypeController(this, GiaoDichDat.class)
+            new CountByTypeController(this, GiaoDichDat.class)
         );
 
         mniSoLuongGDNha = new JMenuItem("Giao dịch nhà");
         mnSoLuong.add(mniSoLuongGDNha);
         mniSoLuongGDNha.addActionListener(
-            new CountGiaoDichByTypeController(this, GiaoDichNha.class)
+            new CountByTypeController(this, GiaoDichNha.class)
         );
 
         JMenu mnTBThanhTien = new JMenu("TB thành tiền");
@@ -316,7 +319,14 @@ public class MainWindow extends JFrame implements GUI {
         btnLamMoi = new JButton("Làm mới");
         btnLamMoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
         panel_2.add(btnLamMoi);
-        btnLamMoi.addActionListener(new RefreshController(this));
+        btnLamMoi.addActionListener(
+            new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    renew();
+                }
+            }
+        );
 
         spData = new JScrollPane();
         mainPanel.add(spData, BorderLayout.CENTER);
@@ -458,6 +468,32 @@ public class MainWindow extends JFrame implements GUI {
             cbLoaiNha.setSelectedItem(giaoDichNha.getLoaiNha());
             txtDiaChi.setText(giaoDichNha.getDiaChi());
         }
+    }
+
+    public void renew() {
+        // Renew cbLoaiGiaoDich
+        cbLoaiGiaoDich.setSelectedIndex(0);
+
+        // Renew jsMaGiaoDich
+        jsMaGiaoDich.setValue(0);
+
+        // Renew jsNgayGiaoDich
+        jsNgayGiaoDich.setValue(new Date());
+
+        // Renew jsDonGia
+        jsDonGia.setValue(0);
+
+        // Renew jsDienTich
+        jsDienTich.setValue(0);
+
+        // Renew cbLoaiDat
+        cbLoaiDat.setSelectedIndex(0);
+
+        // Renew cbLoaiNha
+        cbLoaiNha.setSelectedIndex(0);
+
+        // Renew txtDiaChi
+        txtDiaChi.setText("");
     }
 
     private void setup() {
