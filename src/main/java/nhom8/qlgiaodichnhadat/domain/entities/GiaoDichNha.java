@@ -50,6 +50,7 @@ public class GiaoDichNha extends GiaoDich {
         keyWord = keyWord.toLowerCase();
 
         // Turn informations into lowercase strings
+        String loaiGiaoDich = this.getClass().getSimpleName().toLowerCase();
         String loaiNha = (
             this.loaiNha != null ?
             this.loaiNha.toString().toLowerCase() :
@@ -63,9 +64,10 @@ public class GiaoDichNha extends GiaoDich {
 
         // Return
         return (
+            super.matches(keyWord) ||
+            loaiGiaoDich.contains(keyWord) ||
             loaiNha.contains(keyWord) ||
-            diaChi.contains(keyWord) ||
-            super.matches(keyWord)
+            diaChi.contains(keyWord) 
         );
     }
 

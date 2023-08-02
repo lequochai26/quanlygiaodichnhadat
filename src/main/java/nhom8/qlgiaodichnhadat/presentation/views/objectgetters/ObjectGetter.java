@@ -1,5 +1,5 @@
 package nhom8.qlgiaodichnhadat.presentation.views.objectgetters;
 
-public interface ViewObjectGetter<T> {
+public interface ObjectGetter<T> {
     T getObject();
 }

@@ -43,6 +43,6 @@ public class DataSelectedController implements ListSelectionListener {
         GiaoDich giaoDich = domain.getGiaoDich(maGiaoDich);
 
         // Update mainWindow
-        mainWindow.updateGiaoDich(giaoDich);
+        mainWindow.setGiaoDich(giaoDich);
     }
 }

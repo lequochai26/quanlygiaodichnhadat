@@ -5,38 +5,30 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 import nhom8.qlgiaodichnhadat.domain.IGiaoDichManager;
-import nhom8.qlgiaodichnhadat.domain.entities.GiaoDich;
 import nhom8.qlgiaodichnhadat.presentation.views.MainWindow;
-import nhom8.qlgiaodichnhadat.presentation.views.objectgetters.ObjectGetter;
 
-public class RemoveController implements ActionListener {
+public class RefreshController implements ActionListener {
     // FIELDS:
     private MainWindow mainWindow;
 
     // CONSTRUCTORS:
-    public RemoveController(MainWindow mainWindow) {
+    public RefreshController(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
     }
 
     // METHODS:
     @Override
     public void actionPerformed(ActionEvent e) {
-        // Get GiaoDich Object getter
-        ObjectGetter giaoDichGetter = mainWindow.getGiaoDichGetter();
-
-        // Get GiaoDich object
-        GiaoDich giaoDich = (GiaoDich)giaoDichGetter.getObject();
-
         // Get domain
         IGiaoDichManager domain = mainWindow.getDomain();
-        
-        // Use domain to remove giaoDich
-        domain.removeGiaoDichs(giaoDich);
 
         // Get all GiaoDich objects
         List all = domain.getAllGiaoDichs();
 
-        // Update mainWindow's tblData
-        mainWindow.setData(all);
+        // Check all
+        if (all != null) {
+            // Update mainWindow's tblData
+            mainWindow.setData(all);
+        }
     }
 }

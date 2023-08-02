@@ -49,6 +49,7 @@ public abstract class GiaoDich {
         keyWord = keyWord.toLowerCase();
 
         // Turn informations into lowercase strings
+        String loaiGiaoDich = this.getClass().getSimpleName().toLowerCase();
         String maGiaoDich = "" + this.maGiaoDich;
         String ngayGiaoDich = (
             this.ngayGiaoDich != null ?
@@ -59,6 +60,7 @@ public abstract class GiaoDich {
         String dienTich = "" + this.dienTich;
 
         return (
+            loaiGiaoDich.contains(keyWord) ||
             maGiaoDich.contains(keyWord) ||
             ngayGiaoDich.contains(keyWord) ||
             donGia.contains(keyWord) ||

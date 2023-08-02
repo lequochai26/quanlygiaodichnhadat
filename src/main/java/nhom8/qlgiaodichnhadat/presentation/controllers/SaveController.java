@@ -7,7 +7,7 @@ import java.util.List;
 import nhom8.qlgiaodichnhadat.domain.IGiaoDichManager;
 import nhom8.qlgiaodichnhadat.domain.entities.GiaoDich;
 import nhom8.qlgiaodichnhadat.presentation.views.MainWindow;
-import nhom8.qlgiaodichnhadat.presentation.views.objectgetters.ViewObjectGetter;
+import nhom8.qlgiaodichnhadat.presentation.views.objectgetters.ObjectGetter;
 
 public class SaveController implements ActionListener {
     // FIELDS:
@@ -22,7 +22,7 @@ public class SaveController implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         // Get GiaoDich Getter object
-        ViewObjectGetter giaoDichGetter = mainWindow.getGiaoDichGetter();
+        ObjectGetter giaoDichGetter = mainWindow.getGiaoDichGetter();
 
         // Get GiaoDich object
         GiaoDich giaoDich = (GiaoDich)giaoDichGetter.getObject();
@@ -47,6 +47,6 @@ public class SaveController implements ActionListener {
         List all = domain.getAllGiaoDichs();
 
         // Update tblData to mainWindow
-        mainWindow.updateTblData(all);
+        mainWindow.setData(all);
     }
 }

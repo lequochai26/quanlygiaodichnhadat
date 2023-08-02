@@ -14,7 +14,7 @@ import nhom8.qlgiaodichnhadat.domain.entities.enums.LoaiNha;
 import nhom8.qlgiaodichnhadat.presentation.views.MainWindow;
 import nhom8.qlgiaodichnhadat.presentation.views.objectholders.ObjectHolder;
 
-public class MainWindowGiaoDichGetter implements ViewObjectGetter<GiaoDich> {
+public class MainWindowGiaoDichGetter implements ObjectGetter<GiaoDich> {
     // FIELDS:
     private MainWindow mainWindow;
 

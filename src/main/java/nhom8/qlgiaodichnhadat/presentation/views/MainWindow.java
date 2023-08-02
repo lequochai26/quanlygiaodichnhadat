@@ -28,12 +28,21 @@ import nhom8.qlgiaodichnhadat.domain.entities.GiaoDichNha;
 import nhom8.qlgiaodichnhadat.domain.entities.enums.LoaiDat;
 import nhom8.qlgiaodichnhadat.domain.entities.enums.LoaiNha;
 import nhom8.qlgiaodichnhadat.presentation.GUI;
+import nhom8.qlgiaodichnhadat.presentation.controllers.AverageAllController;
+import nhom8.qlgiaodichnhadat.presentation.controllers.AverageByTypeController;
+import nhom8.qlgiaodichnhadat.presentation.controllers.CloseController;
+import nhom8.qlgiaodichnhadat.presentation.controllers.CountAllController;
+import nhom8.qlgiaodichnhadat.presentation.controllers.CountGiaoDichByTypeController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.DataSelectedController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.LoaiGiaoDichSelectedController;
+import nhom8.qlgiaodichnhadat.presentation.controllers.RefreshController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.RemoveController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.SaveController;
+import nhom8.qlgiaodichnhadat.presentation.controllers.SearchByKeyWordController;
+import nhom8.qlgiaodichnhadat.presentation.controllers.SearchByTypeController;
+import nhom8.qlgiaodichnhadat.presentation.controllers.SearchInRangeOfDateController;
 import nhom8.qlgiaodichnhadat.presentation.views.objectgetters.MainWindowGiaoDichGetter;
-import nhom8.qlgiaodichnhadat.presentation.views.objectgetters.ViewObjectGetter;
+import nhom8.qlgiaodichnhadat.presentation.views.objectgetters.ObjectGetter;
 import nhom8.qlgiaodichnhadat.presentation.views.objectholders.ClassObjectHolder;
 import nhom8.qlgiaodichnhadat.presentation.views.objectholders.ObjectHolder;
 
@@ -47,7 +56,7 @@ import javax.swing.SpinnerNumberModel;
 
 public class MainWindow extends JFrame implements GUI {
     // FIELDS:
-    private ViewObjectGetter giaoDichGetter;
+    private ObjectGetter giaoDichGetter;
 
     private IGiaoDichManager domain;
 
@@ -114,6 +123,7 @@ public class MainWindow extends JFrame implements GUI {
 
         mniDong = new JMenuItem("Đóng");
         mnChuongTrinh.add(mniDong);
+        mniDong.addActionListener(new CloseController(this));
 
         JMenu mnHanhDong = new JMenu("Hành động");
         menuBar.add(mnHanhDong);
@@ -129,45 +139,78 @@ public class MainWindow extends JFrame implements GUI {
 
         mniTimKiemTuKhoa = new JMenuItem("Từ khóa");
         mnTimKiem.add(mniTimKiemTuKhoa);
+        mniTimKiemTuKhoa.addActionListener(
+            new SearchByKeyWordController(this)
+        );
 
         JMenu mnTimKiemTheoLoai = new JMenu("Loại");
         mnTimKiem.add(mnTimKiemTheoLoai);
 
         mniTimKiemGDDat = new JMenuItem("Giao dịch đất");
         mnTimKiemTheoLoai.add(mniTimKiemGDDat);
+        mniTimKiemGDDat.addActionListener(
+            new SearchByTypeController(this, GiaoDichDat.class)
+        );
 
         mniTimKiemGDNha = new JMenuItem("Giao dịch nhà");
         mnTimKiemTheoLoai.add(mniTimKiemGDNha);
+        mniTimKiemGDNha.addActionListener(
+            new SearchByTypeController(this, GiaoDichNha.class)
+        );
 
         mniTimKiemKhoangTG = new JMenuItem("Khoảng thời gian");
         mnTimKiem.add(mniTimKiemKhoangTG);
+        mniTimKiemKhoangTG.addActionListener(
+            new SearchInRangeOfDateController(this)
+        );
 
         mniLamMoi = new JMenuItem("Làm mới");
         mnTimKiem.add(mniLamMoi);
+        mniLamMoi.addActionListener(
+            new RefreshController(this)
+        );
 
         JMenu mnSoLuong = new JMenu("Số lượng");
         menuBar.add(mnSoLuong);
 
         mniSoLuongTatCa = new JMenuItem("Tất cả");
         mnSoLuong.add(mniSoLuongTatCa);
+        mniSoLuongTatCa.addActionListener(
+            new CountAllController(this)
+        );
 
         mniSoLuongGDDat = new JMenuItem("Giao dịch đất");
         mnSoLuong.add(mniSoLuongGDDat);
+        mniSoLuongGDDat.addActionListener(
+            new CountGiaoDichByTypeController(this, GiaoDichDat.class)
+        );
 
         mniSoLuongGDNha = new JMenuItem("Giao dịch nhà");
         mnSoLuong.add(mniSoLuongGDNha);
+        mniSoLuongGDNha.addActionListener(
+            new CountGiaoDichByTypeController(this, GiaoDichNha.class)
+        );
 
         JMenu mnTBThanhTien = new JMenu("TB thành tiền");
         menuBar.add(mnTBThanhTien);
 
         mniTBThanhTienTatCa = new JMenuItem("Tất cả");
         mnTBThanhTien.add(mniTBThanhTienTatCa);
+        mniTBThanhTienTatCa.addActionListener(
+            new AverageAllController(this)
+        );
 
         mniTBThanhTienGDDat = new JMenuItem("Giao dịch đất");
         mnTBThanhTien.add(mniTBThanhTienGDDat);
+        mniTBThanhTienGDDat.addActionListener(
+            new AverageByTypeController(this, GiaoDichDat.class)
+        );
 
         mniTBThanhTienGDNha = new JMenuItem("Giao dịch nhà");
         mnTBThanhTien.add(mniTBThanhTienGDNha);
+        mniTBThanhTienGDNha.addActionListener(
+            new AverageByTypeController(this, GiaoDichNha.class)
+        );
 
         mainPanel = new JPanel();
         mainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -273,6 +316,7 @@ public class MainWindow extends JFrame implements GUI {
         btnLamMoi = new JButton("Làm mới");
         btnLamMoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
         panel_2.add(btnLamMoi);
+        btnLamMoi.addActionListener(new RefreshController(this));
 
         spData = new JScrollPane();
         mainPanel.add(spData, BorderLayout.CENTER);
@@ -280,14 +324,21 @@ public class MainWindow extends JFrame implements GUI {
         tblData = new JTable();
         tblData.setModel(new DefaultTableModel(
                 new Object[][] {},
-                new String[] { "Loại giao dịch", "Mã giao dịch", "Ngày giao dịch", "Đơn giá", "Diện tích", "Loại đất",
-                        "Loại nhà", "Địa chỉ" }) {
-            boolean[] columnEditables = new boolean[] { false, false, false, false, false, false, false, false };
+                new String[] {
+                    "Loại giao dịch", "Mã giao dịch", "Ngày giao dịch", "Đơn giá", "Diện tích", "Loại đất",
+                    "Loại nhà", "Địa chỉ", "Thành tiền"
+                }
+            )
+            {
+                boolean[] columnEditables = new boolean[] {
+                    false, false, false, false, false, false, false, false, false
+                };
 
-            public boolean isCellEditable(int row, int column) {
-                return columnEditables[column];
+                public boolean isCellEditable(int row, int column) {
+                    return columnEditables[column];
+                }
             }
-        });
+        );
         spData.setViewportView(tblData);
         tblData.getSelectionModel().addListSelectionListener(
             new DataSelectedController(this)
@@ -313,7 +364,7 @@ public class MainWindow extends JFrame implements GUI {
         startup();
     }
 
-    public void updateTblData(List data) {
+    public void setData(List data) {
         // Get DefaultTableModel from tblData
         DefaultTableModel model = (DefaultTableModel)tblData.getModel();
 
@@ -364,13 +415,14 @@ public class MainWindow extends JFrame implements GUI {
                         (giaoDichNha != null) ?
                         giaoDichNha.getDiaChi() :
                         null
-                    )
+                    ),
+                    giaoDich.tinhThanhTien()
                 }
             );
         }
     }
     
-    public void updateGiaoDich(GiaoDich giaoDich) {
+    public void setGiaoDich(GiaoDich giaoDich) {
         // Check null
         if (giaoDich == null) {
             return;
@@ -429,11 +481,11 @@ public class MainWindow extends JFrame implements GUI {
 
         // Check all and update tblData
         if (all != null) {
-            updateTblData(all);
+            setData(all);
         }
     }
 
-    public ViewObjectGetter getGiaoDichGetter() {
+    public ObjectGetter getGiaoDichGetter() {
         return giaoDichGetter;
     }
 

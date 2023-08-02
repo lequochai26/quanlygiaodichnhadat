@@ -46,6 +46,7 @@ public class GiaoDichDat extends GiaoDich {
         keyWord = keyWord.toLowerCase();
 
         // Turn informations into lowercase strings
+        String loaiGiaoDich = this.getClass().getSimpleName().toLowerCase();
         String loaiDat = (
             this.loaiDat != null ?
             this.loaiDat.toString().toLowerCase() :
@@ -55,6 +56,7 @@ public class GiaoDichDat extends GiaoDich {
         // Return
         return (
             super.matches(keyWord) ||
+            loaiGiaoDich.contains(keyWord) ||
             loaiDat.contains(keyWord)
         );
     }

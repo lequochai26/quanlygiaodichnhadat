@@ -1,5 +1,6 @@
 package nhom8.qlgiaodichnhadat.domain;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -287,6 +288,9 @@ public class GiaoDichManager implements IGiaoDichManager {
 
         // Check result
         if (result != null) {
+            // Remove list initialization
+            List removeList = new ArrayList();
+
             // Filtering
             for (Object obj : result) {
                 // Check instance of GiaoDich
@@ -303,8 +307,13 @@ public class GiaoDichManager implements IGiaoDichManager {
                 }
 
                 // Otherwise
-                // Remove giaoDich from result
-                result.remove(giaoDich);
+                // Add to removeList
+                removeList.add(giaoDich);
+            }
+
+            // Removing all objects from removeList
+            for (Object obj : removeList) {
+                result.remove(obj);
             }
         }
 
@@ -366,6 +375,9 @@ public class GiaoDichManager implements IGiaoDichManager {
 
         // Check result
         if (result != null) {
+            // Remove list initialization
+            List removeList = new ArrayList();
+
             // Filtering result
             for (Object obj : result) {
                 // Check if obj is instance of class cls
@@ -373,6 +385,12 @@ public class GiaoDichManager implements IGiaoDichManager {
                     continue;
                 }
 
+                // Add obj to removeList
+                removeList.add(obj);
+            }
+
+            // Remove all objects from removeList
+            for (Object obj : removeList) {
                 // Remove obj from result
                 result.remove(obj);
             }
@@ -436,6 +454,10 @@ public class GiaoDichManager implements IGiaoDichManager {
 
         // Check result and filtering
         if (result != null) {
+            // Remove list initialization
+            List removeList = new ArrayList();
+
+            // Filtering
             for (Object obj : result) {
                 // Check obj is an instance of GiaoDich
                 if (!(obj instanceof GiaoDich)) {
@@ -450,14 +472,19 @@ public class GiaoDichManager implements IGiaoDichManager {
 
                 // Check ngayGiaoDich
                 if (
-                    ngayGiaoDich.compareTo(start) >= 0 ||
+                    ngayGiaoDich.compareTo(start) >= 0 &&
                     ngayGiaoDich.compareTo(end) <= 0
                 ) {
                     continue;
                 }
 
-                // Remove giaoDich from result
-                result.remove(giaoDich);
+                // Add giaoDich into removeList
+                removeList.add(giaoDich);
+            }
+
+            // remove all objects in removeList from result
+            for (Object obj : removeList) {
+                result.remove(obj);
             }
         }
 
