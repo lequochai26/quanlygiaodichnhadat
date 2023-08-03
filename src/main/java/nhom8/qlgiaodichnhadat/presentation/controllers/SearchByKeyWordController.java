@@ -37,15 +37,7 @@ public class SearchByKeyWordController implements ActionListener {
         // Get domain
         IGiaoDichManager domain = mainWindow.getDomain();
 
-        // Get GiaoDich objects from key word
-        List giaoDichs = domain.getGiaoDichsByKeyWord(keyWord);
-
-        // Check if giaoDichs is null
-        if (giaoDichs == null) {
-            return;
-        }
-
-        // Update tblData for mainWindow
-        mainWindow.setData(giaoDichs);
+        // Tells domain to get giaodich data by keyWord
+        domain.getGiaoDichsByKeyWord(keyWord);
     }
 }

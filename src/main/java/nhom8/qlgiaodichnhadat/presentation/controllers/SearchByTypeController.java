@@ -24,15 +24,7 @@ public class SearchByTypeController implements ActionListener {
         // Get domain
         IGiaoDichManager domain = mainWindow.getDomain();
 
-        // Get giaoDichs by type
-        List giaoDichs = domain.getGiaoDichsByType(type);
-
-        // Check giaoDichs null
-        if (giaoDichs == null) {
-            return;
-        }
-
-        // Update tblData for mainWindow
-        mainWindow.setData(giaoDichs);
+        // Tells domain to get GiaoDich objects by type
+        domain.getGiaoDichsByType(type);
     }
 }

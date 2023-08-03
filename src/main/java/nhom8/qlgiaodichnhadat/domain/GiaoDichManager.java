@@ -13,13 +13,19 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
 import nhom8.qlgiaodichnhadat.domain.entities.GiaoDich;
+import nhom8.qlgiaodichnhadat.pattern.observer.Subject;
 
-public class GiaoDichManager implements IGiaoDichManager {
+public class GiaoDichManager extends Subject implements IGiaoDichManager {
     // FIELDS:
     private SessionFactory sessionFactory;
 
+    private List data;
+
     // CONSTRUCTORS:
     public GiaoDichManager() {
+        // Inherit from super class's default constructor
+        super();
+
         // Configuration definition
         Configuration configuration = null;
 
@@ -183,296 +189,117 @@ public class GiaoDichManager implements IGiaoDichManager {
 
     @Override
     public List getAllGiaoDichs() {
-        // Check sessionFactory
-        if (sessionFactory == null) {
-            JOptionPane.showMessageDialog(
-                null,
-                "Session factory not found!",
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
-            return null;
-        }
+        // Load data
+        List data = this.loadData();
 
-        // Result decleration
-        List result = null;
-
-        // Session declaration
-        Session session = null;
-
-        try {
-            // Open session
-            session = sessionFactory.openSession();
-
-            // HQL command initialization
-            String hql = "FROM GiaoDich";
-
-            // Create query
-            Query query = session.createQuery(hql);
-
-            // List
-            result = query.list();
-        }
-        catch (Exception e) {
-            // Show error message
-            JOptionPane.showMessageDialog(
-                null,
-                e.toString(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
-        }
-
-        // Check and close session
-        if (session != null) {
-            if (session.isOpen()) {
-                session.close();
-            }
+        // Check and setData
+        if (data != null) {
+            this.setData(data);
         }
 
         // Return
-        return result;
+        return data;
     }
 
     @Override
     public List getGiaoDichsByKeyWord(String keyWord) {
-        // Check session factory
-        if (sessionFactory == null) {
-            // Show error message
-            JOptionPane.showMessageDialog(
-                null,
-                "Session factory not found!",
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
+        // Load data
+        List data = this.loadData();
 
-            // Return null
-            return null;
-        }
-
-        // Result declaration
-        List result = null;
-
-        // Session declaration
-        Session session = null;
-
-        try {
-            // Open session
-            session = sessionFactory.openSession();
-
-            // HQL command initialization
-            String hql = "FROM GiaoDich";
-
-            // Create query
-            Query query = session.createQuery(hql);
-
-            // List
-            result = query.list();
-        }
-        catch (Exception e) {
-            // Show error message
-            JOptionPane.showMessageDialog(
-                null,
-                e.toString(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
-        }
-
-        // Check and close session
-        if (session != null) {
-            if (session.isOpen()) {
-                session.close();
-            }
-        }
-
-        // Check result
-        if (result != null) {
-            // Remove list initialization
+        // Check data null
+        if (data != null) {
+            // Create a remove list
             List removeList = new ArrayList();
 
-            // Filtering
-            for (Object obj : result) {
-                // Check instance of GiaoDich
-                if (!(obj instanceof GiaoDich)) {
-                    continue;
-                }
+            // Filtering data
+            for (Object row : data) {
+                // Cast row into a GiaoDich object
+                GiaoDich giaoDich = (GiaoDich)row;
 
-                // Cast obj to GiaoDich
-                GiaoDich giaoDich = (GiaoDich)obj;
-
-                // Check matches keyWord
+                // Check if giaoDich matches to keyWord
                 if (giaoDich.matches(keyWord)) {
                     continue;
                 }
 
                 // Otherwise
-                // Add to removeList
+                // Add this giaoDich into removeList
                 removeList.add(giaoDich);
             }
 
-            // Removing all objects from removeList
+            // Remove all objects in removeList from data
             for (Object obj : removeList) {
-                result.remove(obj);
+                data.remove(obj);
             }
+
+            // Set data
+            this.setData(data);
         }
 
         // Return
-        return result;
+        return data;
     }
 
     @Override
     public List getGiaoDichsByType(Class type) {
-        // Check session factory
-        if (sessionFactory == null) {
-            // Show error message
-            JOptionPane.showMessageDialog(
-                null,
-                "Session factory not found!",
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
+        // Load data
+        List data = this.loadData();
 
-            // Return null
-            return null;
-        }
+        // Check data null
+        if (data != null) {
+            // Create a removeList
+            List removeList = new ArrayList(0);
 
-        // Result declaration
-        List result = null;
+            // Filtering data
+            for (Object row : data) {
+                // Cast row into a GiaoDich object
+                GiaoDich giaoDich = (GiaoDich)row;
 
-        // Session declaration
-        Session session = null;
-
-        try {
-            // Open session
-            session = sessionFactory.openSession();
-
-            // HQL command initialization
-            String hql = "FROM GiaoDich";
-
-            // Create query
-            Query query = session.createQuery(hql);
-
-            // List
-            result = query.list();
-        }
-        catch (Exception e) {
-            // Show error message
-            JOptionPane.showMessageDialog(
-                null,
-                e.toString(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
-        }
-
-        // Check and close session
-        if (session != null) {
-            if (session.isOpen()) {
-                session.close();
-            }
-        }
-
-        // Check result
-        if (result != null) {
-            // Remove list initialization
-            List removeList = new ArrayList();
-
-            // Filtering result
-            for (Object obj : result) {
-                // Check if obj is instance of class cls
-                if (obj.getClass() == type) {
+                // Check if giaoDich's type is matches to type
+                if (giaoDich.getClass() == type) {
                     continue;
                 }
 
-                // Add obj to removeList
-                removeList.add(obj);
+                // Otherwise
+                // Add giaoDich into removeList
+                removeList.add(giaoDich);
             }
 
-            // Remove all objects from removeList
+            // Remove all objects in removeList from data
             for (Object obj : removeList) {
-                // Remove obj from result
-                result.remove(obj);
+                data.remove(obj);
             }
+
+            // Set data
+            this.setData(data);
         }
 
         // Return
-        return result;
+        return data;
     }
 
     @Override
     public List getGiaoDichsInRangeOfDate(Date start, Date end) {
-        // Check session factory
-        if (sessionFactory == null) {
-            // Show error message
-            JOptionPane.showMessageDialog(
-                null,
-                "Session factory not found!",
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
+        // Load data
+        List data = this.loadData();
 
-            // Return null
-            return null;
-        }
-
-        // Result declaration
-        List result = null;
-
-        // Session declaration
-        Session session = null;
-
-        try {
-            // Open session
-            session = sessionFactory.openSession();
-
-            // HQL command initialization
-            String hql = "FROM GiaoDich";
-
-            // Create query
-            Query query = session.createQuery(hql);
-
-            // List
-            result = query.list();
-        }
-        catch (Exception e) {
-            // Show error message
-            JOptionPane.showMessageDialog(
-                null,
-                e.toString(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
-        }
-
-        // Check and close session
-        if (session != null) {
-            if (session.isOpen()) {
-                session.close();
-            }
-        }
-
-        // Check result and filtering
-        if (result != null) {
-            // Remove list initialization
+        // Check data null
+        if (data != null) {
+            // Create a remove list
             List removeList = new ArrayList();
 
             // Filtering
-            for (Object obj : result) {
-                // Check obj is an instance of GiaoDich
-                if (!(obj instanceof GiaoDich)) {
-                    continue;
-                }
+            for (Object row : data) {
+                // Cast row into a GiaoDich object
+                GiaoDich giaoDich = (GiaoDich)row;
 
-                // Cast obj to GiaoDich type
-                GiaoDich giaoDich = (GiaoDich)obj;
-
-                // Check giaoDich's ngayGiaoDich
+                // Get giaoDich's ngayGiaoDich
                 Date ngayGiaoDich = giaoDich.getNgayGiaoDich();
 
-                // Check ngayGiaoDich
-                if (
-                    ngayGiaoDich.compareTo(start) >= 0 &&
+                // Check if ngayGiaoDich in range of start date and end date
+                if
+                (
+                    ngayGiaoDich.compareTo(start) >= 0
+                    &&
                     ngayGiaoDich.compareTo(end) <= 0
                 ) {
                     continue;
@@ -482,14 +309,17 @@ public class GiaoDichManager implements IGiaoDichManager {
                 removeList.add(giaoDich);
             }
 
-            // remove all objects in removeList from result
+            // Remove all objects in removeList from data
             for (Object obj : removeList) {
-                result.remove(obj);
+                data.remove(obj);
             }
-        }
 
+            // Set data
+            this.setData(data);
+        }
+        
         // Return
-        return result;
+        return data;
     }
 
     @Override
@@ -498,7 +328,7 @@ public class GiaoDichManager implements IGiaoDichManager {
         GiaoDich giaoDich = null;
 
         // Get all GiaoDich objects
-        List all = this.getAllGiaoDichs();
+        List all = this.loadData();
 
         // Check all
         if (all != null) {
@@ -594,5 +424,81 @@ public class GiaoDichManager implements IGiaoDichManager {
 
         // Return
         return result;
+    }
+
+    public List loadData() {
+        // Check sessionFactory
+        if (sessionFactory == null) {
+            // Show error message
+            JOptionPane.showMessageDialog(
+                null,
+                "Session factory not found!",
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+
+            // Return
+            return null;
+        }
+
+        // Data initialization
+        List data = null;
+
+        // Session declaration
+        Session session = null;
+
+        try {
+            // Open session
+            session = sessionFactory.openSession();
+
+            // HQL Command initialization
+            String hql = "FROM GiaoDich";
+
+            // Create query
+            Query query = session.createQuery(hql);
+
+            // List 
+            data = query.list();
+        }
+        catch (Exception e) {
+            // Show error message
+            JOptionPane.showMessageDialog(
+                null,
+                e.toString(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+
+        // Check and close session
+        if (session != null) {
+            if (session.isOpen()) {
+                session.close();
+            }
+        }
+
+        // Return
+        return data;
+    }
+
+    public void setData(List data) {
+        // Check data null
+        if (data == null) {
+            return;
+        }
+
+        // oldValue, newValue definition
+        List newValue = data;
+        List oldValue = this.data;
+
+        // Update data
+        this.data = newValue;
+
+        // Fire property change
+        this.firePropertyChange(
+            "data",
+            newValue,
+            oldValue
+        );
     }
 }

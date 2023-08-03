@@ -33,10 +33,7 @@ public class RemoveController implements ActionListener {
         // Use domain to remove giaoDich
         domain.removeGiaoDichs(giaoDich);
 
-        // Get all GiaoDich objects
-        List all = domain.getAllGiaoDichs();
-
-        // Update mainWindow's tblData
-        mainWindow.setData(all);
+        // Refresh view's data
+        domain.getAllGiaoDichs();
     }
 }

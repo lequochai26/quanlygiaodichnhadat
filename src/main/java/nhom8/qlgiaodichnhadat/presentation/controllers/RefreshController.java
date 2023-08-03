@@ -22,13 +22,7 @@ public class RefreshController implements ActionListener {
         // Get domain
         IGiaoDichManager domain = mainWindow.getDomain();
 
-        // Get all GiaoDich objects
+        // Tells domain to get all giaodich data
         List all = domain.getAllGiaoDichs();
-
-        // Check all
-        if (all != null) {
-            // Update mainWindow's tblData
-            mainWindow.setData(all);
-        }
     }
 }

@@ -43,10 +43,7 @@ public class SaveController implements ActionListener {
         // Add GiaoDich object using domain
         domain.saveGiaoDichs(giaoDich);
 
-        // Get all GiaoDich objects
-        List all = domain.getAllGiaoDichs();
-
-        // Update tblData to mainWindow
-        mainWindow.setData(all);
+        // Refresh view's data
+        domain.getAllGiaoDichs();
     }
 }

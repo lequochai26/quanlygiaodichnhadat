@@ -3,6 +3,9 @@ package nhom8.qlgiaodichnhadat.presentation.views;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import java.awt.Font;
 import java.awt.BorderLayout;
 import javax.swing.JMenuBar;
@@ -13,6 +16,8 @@ import javax.swing.JScrollPane;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JButton;
 import javax.swing.JTextField;
@@ -30,14 +35,12 @@ import nhom8.qlgiaodichnhadat.domain.entities.GiaoDichDat;
 import nhom8.qlgiaodichnhadat.domain.entities.GiaoDichNha;
 import nhom8.qlgiaodichnhadat.domain.entities.enums.LoaiDat;
 import nhom8.qlgiaodichnhadat.domain.entities.enums.LoaiNha;
+import nhom8.qlgiaodichnhadat.pattern.observer.ISubject;
 import nhom8.qlgiaodichnhadat.presentation.GUI;
 import nhom8.qlgiaodichnhadat.presentation.controllers.AverageAllController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.AverageByTypeController;
-import nhom8.qlgiaodichnhadat.presentation.controllers.CloseController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.CountAllController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.CountByTypeController;
-import nhom8.qlgiaodichnhadat.presentation.controllers.DataSelectedController;
-import nhom8.qlgiaodichnhadat.presentation.controllers.LoaiGiaoDichSelectedController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.RefreshController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.RemoveController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.SaveController;
@@ -57,11 +60,12 @@ import java.util.List;
 import java.util.Calendar;
 import javax.swing.SpinnerNumberModel;
 
-public class MainWindow extends JFrame implements GUI {
+public class MainWindow extends JFrame implements GUI, PropertyChangeListener {
     // FIELDS:
     private ObjectGetter giaoDichGetter;
 
     private IGiaoDichManager domain;
+    private ISubject publisher;
 
     private JMenuBar menuBar;
     private JPanel mainPanel;
@@ -110,7 +114,12 @@ public class MainWindow extends JFrame implements GUI {
         giaoDichGetter = new MainWindowGiaoDichGetter(this);
 
         // Domain initialization
-        domain = new GiaoDichManager();
+        GiaoDichManager domain = new GiaoDichManager();
+        this.domain = domain;
+
+        // Publisher definition
+        this.publisher = domain;
+        publisher.addPropertyChangeListener(this);
 
         // View configurations
         setFont(new Font("Arial", Font.PLAIN, 14));
@@ -126,7 +135,14 @@ public class MainWindow extends JFrame implements GUI {
 
         mniDong = new JMenuItem("Đóng");
         mnChuongTrinh.add(mniDong);
-        mniDong.addActionListener(new CloseController(this));
+        mniDong.addActionListener(
+            new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    close();
+                }
+            }
+        );
 
         JMenu mnHanhDong = new JMenu("Hành động");
         menuBar.add(mnHanhDong);
@@ -238,7 +254,12 @@ public class MainWindow extends JFrame implements GUI {
         cbLoaiGiaoDich.setFont(new Font("Tahoma", Font.PLAIN, 14));
         panel_1.add(cbLoaiGiaoDich);
         cbLoaiGiaoDich.addActionListener(
-            new LoaiGiaoDichSelectedController(this)
+            new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    loaiGiaoDichSelected();
+                }
+            }
         );
 
         lblMaGiaoDich = new JLabel("Mã giao dịch:");
@@ -351,7 +372,12 @@ public class MainWindow extends JFrame implements GUI {
         );
         spData.setViewportView(tblData);
         tblData.getSelectionModel().addListSelectionListener(
-            new DataSelectedController(this)
+            new ListSelectionListener() {
+                @Override
+                public void valueChanged(ListSelectionEvent e) {
+                    dataSelected();
+                }
+            }
         );
 
         // Default setup after configured successfully
@@ -372,6 +398,23 @@ public class MainWindow extends JFrame implements GUI {
 
         // Startup
         startup();
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent e) {
+        // Get informations from event
+        String propertyName = e.getPropertyName();
+        Object newValue = e.getNewValue();
+        Object oldValue = e.getOldValue();
+
+        // data
+        if (propertyName.equals("data")) {
+            // Set data
+            this.setData((List)newValue);
+
+            // Return
+            return;
+        }
     }
 
     public void setData(List data) {
@@ -468,6 +511,99 @@ public class MainWindow extends JFrame implements GUI {
             cbLoaiNha.setSelectedItem(giaoDichNha.getLoaiNha());
             txtDiaChi.setText(giaoDichNha.getDiaChi());
         }
+    }
+
+    public void close() {
+        // Dispose
+        this.dispose();
+    }
+
+    public void loaiGiaoDichSelected() {
+        // Get selected item from cbLoaiGiaoDich
+        Object item = cbLoaiGiaoDich.getSelectedItem();
+
+        // Get ObjectHolder from item
+        ObjectHolder holder = (ObjectHolder)item;
+
+        // Get object from holder
+        Object object = holder.getObject();
+
+        // Get loaiGiaoDich
+        Class loaiGiaoDich = (Class)object;
+
+        // Config cbLoaiDat
+        cbLoaiDat.setEnabled(
+            loaiGiaoDich == GiaoDichDat.class
+        );
+
+        // Config cbLoaiNha
+        cbLoaiNha.setEnabled(
+            loaiGiaoDich == GiaoDichNha.class
+        );
+
+        // Config txtDiaChi
+        txtDiaChi.setEnabled(
+            loaiGiaoDich == GiaoDichNha.class
+        );
+    }
+
+    public void dataSelected() {
+        // Get selected row
+        int row = tblData.getSelectedRow();
+
+        // Get necessary informations
+        String tenLoaiGiaoDich = (String)tblData.getValueAt(row, 0);
+        int maGiaoDich = (int)tblData.getValueAt(row, 1);
+        Date ngayGiaoDich = (Date)tblData.getValueAt(row, 2);
+        double donGia = (double)tblData.getValueAt(row, 3);
+        double dienTich = (double)tblData.getValueAt(row, 4);
+        LoaiDat loaiDat = (LoaiDat)tblData.getValueAt(row, 5);
+        LoaiNha loaiNha = (LoaiNha)tblData.getValueAt(row, 6);
+        String diaChi = (String)tblData.getValueAt(row, 7);
+
+        // Update
+        // cbLoaiGiaoDich update
+        if (
+            tenLoaiGiaoDich.equals(
+                GiaoDichDat.class.getSimpleName()
+            )
+        ) {
+            cbLoaiGiaoDich.setSelectedIndex(0);
+        }
+        else {
+            cbLoaiGiaoDich.setSelectedIndex(1);
+        }
+
+        // jsMaGiaoDich update
+        jsMaGiaoDich.setValue(maGiaoDich);
+
+        // jsNgayGiaoDich update
+        jsNgayGiaoDich.setValue(ngayGiaoDich);
+
+        // jsDonGia update
+        jsDonGia.setValue(donGia);
+
+        // jsDienTich update
+        jsDienTich.setValue(dienTich);
+
+        // cbLoaiDat update
+        if (loaiDat != null) {
+            cbLoaiDat.setSelectedItem(loaiDat);
+        }
+        else {
+            cbLoaiDat.setSelectedIndex(0);
+        }
+
+        // cbLoaiNha update
+        if (loaiNha != null) {
+            cbLoaiNha.setSelectedItem(loaiNha);
+        }
+        else {
+            cbLoaiNha.setSelectedIndex(0);
+        }
+
+        // txtDiaChi
+        txtDiaChi.setText(diaChi);
     }
 
     public void renew() {

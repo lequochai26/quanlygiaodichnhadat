@@ -96,15 +96,7 @@ public class SearchInRangeOfDateController implements ActionListener {
             return;
         }
 
-        // Get GiaoDich objects in range of date
-        List giaoDichs = domain.getGiaoDichsInRangeOfDate(start, end);
-
-        // Check giaoDichs null
-        if (giaoDichs == null) {
-            return;
-        }
-
-        // Update mainWindow's tblData
-        mainWindow.setData(giaoDichs);
+        // Tells domain to get GiaoDich objects in range of date
+        domain.getGiaoDichsInRangeOfDate(start, end);
     }
 }
