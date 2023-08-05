@@ -14,10 +14,13 @@ import org.hibernate.query.Query;
 
 import nhom8.qlgiaodichnhadat.domain.entities.GiaoDich;
 import nhom8.qlgiaodichnhadat.pattern.observer.Subject;
+import nhom8.qlgiaodichnhadat.persistence.GiaoDichDBHandler;
+import nhom8.qlgiaodichnhadat.persistence.GiaoDichDBHandlerImpl;
+import nhom8.qlgiaodichnhadat.persistence.HibernateGiaoDichDAO;
 
 public class GiaoDichManager extends Subject implements IGiaoDichManager {
     // FIELDS:
-    private SessionFactory sessionFactory;
+    private GiaoDichDBHandler dbHandler;
 
     private List data;
 
@@ -26,171 +29,27 @@ public class GiaoDichManager extends Subject implements IGiaoDichManager {
         // Inherit from super class's default constructor
         super();
 
-        // Configuration definition
-        Configuration configuration = null;
-
-        try {
-            // Configuring
-            configuration = new Configuration();
-            configuration = configuration.configure();
-
-            // Build session factory
-            sessionFactory = configuration.buildSessionFactory();
-        }
-        catch (Exception e) {
-            // Show error message
-            JOptionPane.showMessageDialog(
-                null,
-                e.toString(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
-        }
+        // DBHandler initialization
+        dbHandler = new GiaoDichDBHandlerImpl(
+            new HibernateGiaoDichDAO()
+        );
     }
 
     // METHODS:
     @Override
     public void saveGiaoDichs(GiaoDich... giaoDichs) {
-        // Check session factory
-        if (sessionFactory == null) {
-            JOptionPane.showMessageDialog(
-                null,
-                "No session factory found!",
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
-            return;
-        }
-
-        // Session declaration
-        Session session = null;
-
-        try {
-            // Open session
-            session = sessionFactory.openSession();
-        }
-        catch (Exception e) {
-            JOptionPane.showMessageDialog(
-                null,
-                e.toString(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
-            return;
-        }
-
-        // Begin transaction
-        Transaction transaction = session.beginTransaction();
-
-        // Saving giaodich objects
-        for (GiaoDich giaoDich : giaoDichs) {
-            session.saveOrUpdate(giaoDich);
-        }
-
-        try {
-            // Commit transaction
-            transaction.commit();
-        }
-        catch (Exception e) {
-            // Show error notification
-            JOptionPane.showMessageDialog(
-                null,
-                e.toString(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
-
-            try {
-                // Rollback transaction
-                transaction.rollback();
-            }
-            catch (Exception e2) {
-                JOptionPane.showMessageDialog(
-                    null,
-                    e2.toString(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-                );
-            }
-        }
-
-        // Close session
-        session.close();
+        dbHandler.saveGiaoDichs(giaoDichs);
     }
 
     @Override
     public void removeGiaoDichs(GiaoDich... giaoDichs) {
-        // Check session factory
-        if (sessionFactory == null) {
-            JOptionPane.showMessageDialog(
-                null,
-                "No session factory found!",
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
-            return;
-        }
-
-        // Session declaration
-        Session session = null;
-
-        try {
-            // Open session
-            session = sessionFactory.openSession();
-        }
-        catch (Exception e) {
-            JOptionPane.showMessageDialog(
-                null,
-                e.toString(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
-            return;
-        }
-
-        // Begin transaction
-        Transaction transaction = session.beginTransaction();
-
-        // Removing giaodich objects
-        for (GiaoDich giaoDich : giaoDichs) {
-            session.delete(giaoDich);
-        }
-
-        try {
-            // Commit transaction
-            transaction.commit();
-        }
-        catch (Exception e) {
-            // Show error notification
-            JOptionPane.showMessageDialog(
-                null,
-                e.toString(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
-
-            try {
-                // Rollback transaction
-                transaction.rollback();
-            }
-            catch (Exception e2) {
-                JOptionPane.showMessageDialog(
-                    null,
-                    e2.toString(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-                );
-            }
-        }
-
-        // Close session
-        session.close();
+        dbHandler.removeGiaoDichs(giaoDichs);
     }
 
     @Override
     public List getAllGiaoDichs() {
         // Load data
-        List data = this.loadData();
+        List data = dbHandler.getAllGiaoDichs();
 
         // Check and setData
         if (data != null) {
@@ -204,7 +63,7 @@ public class GiaoDichManager extends Subject implements IGiaoDichManager {
     @Override
     public List getGiaoDichsByKeyWord(String keyWord) {
         // Load data
-        List data = this.loadData();
+        List data = dbHandler.getAllGiaoDichs();
 
         // Check data null
         if (data != null) {
@@ -242,7 +101,7 @@ public class GiaoDichManager extends Subject implements IGiaoDichManager {
     @Override
     public List getGiaoDichsByType(Class type) {
         // Load data
-        List data = this.loadData();
+        List data = dbHandler.getAllGiaoDichs();
 
         // Check data null
         if (data != null) {
@@ -280,7 +139,7 @@ public class GiaoDichManager extends Subject implements IGiaoDichManager {
     @Override
     public List getGiaoDichsInRangeOfDate(Date start, Date end) {
         // Load data
-        List data = this.loadData();
+        List data = dbHandler.getAllGiaoDichs();
 
         // Check data null
         if (data != null) {
@@ -324,26 +183,7 @@ public class GiaoDichManager extends Subject implements IGiaoDichManager {
 
     @Override
     public GiaoDich getGiaoDich(int maGiaoDich) {
-        // GiaoDich object definition
-        GiaoDich giaoDich = null;
-
-        // Get all GiaoDich objects
-        List all = this.loadData();
-
-        // Check all
-        if (all != null) {
-            // Fetching
-            for (Object obj : all) {
-                GiaoDich gd = (GiaoDich)obj;
-                if (gd.getMaGiaoDich() == maGiaoDich) {
-                    giaoDich = gd;
-                    break;
-                }
-            }
-        }
-
-        // Return
-        return giaoDich;
+        return dbHandler.getGiaoDich(maGiaoDich);
     }
 
     @Override
@@ -424,61 +264,6 @@ public class GiaoDichManager extends Subject implements IGiaoDichManager {
 
         // Return
         return result;
-    }
-
-    public List loadData() {
-        // Check sessionFactory
-        if (sessionFactory == null) {
-            // Show error message
-            JOptionPane.showMessageDialog(
-                null,
-                "Session factory not found!",
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
-
-            // Return
-            return null;
-        }
-
-        // Data initialization
-        List data = null;
-
-        // Session declaration
-        Session session = null;
-
-        try {
-            // Open session
-            session = sessionFactory.openSession();
-
-            // HQL Command initialization
-            String hql = "FROM GiaoDich";
-
-            // Create query
-            Query query = session.createQuery(hql);
-
-            // List 
-            data = query.list();
-        }
-        catch (Exception e) {
-            // Show error message
-            JOptionPane.showMessageDialog(
-                null,
-                e.toString(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
-        }
-
-        // Check and close session
-        if (session != null) {
-            if (session.isOpen()) {
-                session.close();
-            }
-        }
-
-        // Return
-        return data;
     }
 
     public void setData(List data) {
