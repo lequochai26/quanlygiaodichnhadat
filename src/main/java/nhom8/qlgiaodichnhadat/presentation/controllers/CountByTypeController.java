@@ -5,7 +5,9 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 
+import nhom8.qlgiaodichnhadat.command.CountByTypeCommand;
 import nhom8.qlgiaodichnhadat.domain.IGiaoDichManager;
+import nhom8.qlgiaodichnhadat.pattern.command.Command;
 import nhom8.qlgiaodichnhadat.presentation.views.MainWindow;
 
 public class CountByTypeController implements ActionListener {
@@ -25,15 +27,10 @@ public class CountByTypeController implements ActionListener {
         // Get domain
         IGiaoDichManager domain = mainWindow.getDomain();
 
-        // Count by type
-        int count = domain.countGiaoDichsByType(type);
+        // Create command
+        Command command = new CountByTypeCommand(mainWindow, domain, type);
 
-        // Show message dialog
-        JOptionPane.showMessageDialog(
-            mainWindow,
-            "Số lượng " + type.getSimpleName() + ": " + count,
-            "Số lượng giao dịch",
-            JOptionPane.INFORMATION_MESSAGE
-        );
+        // Execute command
+        command.execute();
     }
 }

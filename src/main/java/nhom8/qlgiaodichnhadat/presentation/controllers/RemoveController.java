@@ -4,8 +4,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+import nhom8.qlgiaodichnhadat.command.RemoveCommand;
 import nhom8.qlgiaodichnhadat.domain.IGiaoDichManager;
 import nhom8.qlgiaodichnhadat.domain.entities.GiaoDich;
+import nhom8.qlgiaodichnhadat.pattern.command.Command;
 import nhom8.qlgiaodichnhadat.presentation.views.MainWindow;
 import nhom8.qlgiaodichnhadat.presentation.views.objectgetters.ObjectGetter;
 
@@ -30,10 +32,10 @@ public class RemoveController implements ActionListener {
         // Get domain
         IGiaoDichManager domain = mainWindow.getDomain();
         
-        // Use domain to remove giaoDich
-        domain.removeGiaoDichs(giaoDich);
+        // Create command
+        Command command = new RemoveCommand(domain, giaoDich);
 
-        // Refresh view's data
-        domain.getAllGiaoDichs();
+        // Execute command
+        command.execute();
     }
 }

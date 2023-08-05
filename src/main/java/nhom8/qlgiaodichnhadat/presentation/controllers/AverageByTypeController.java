@@ -5,7 +5,9 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 
+import nhom8.qlgiaodichnhadat.command.AverageByTypeCommand;
 import nhom8.qlgiaodichnhadat.domain.IGiaoDichManager;
+import nhom8.qlgiaodichnhadat.pattern.command.Command;
 import nhom8.qlgiaodichnhadat.presentation.views.MainWindow;
 
 public class AverageByTypeController implements ActionListener {
@@ -25,15 +27,10 @@ public class AverageByTypeController implements ActionListener {
         // Get domain
         IGiaoDichManager domain = mainWindow.getDomain();
 
-        // Average by type
-        double result = domain.averageThanhTienByType(type);
+        // Create command
+        Command command = new AverageByTypeCommand(mainWindow, domain, type);
 
-        // Show message dialog
-        JOptionPane.showMessageDialog(
-            mainWindow,
-            "Trung bình thành tiền " + type.getSimpleName() + ": " + result,
-            "Trung bình thành tiền",
-            JOptionPane.INFORMATION_MESSAGE
-        );
+        // Execute command
+        command.execute();
     }
 }

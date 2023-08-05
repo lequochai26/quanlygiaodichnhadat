@@ -4,15 +4,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+import nhom8.qlgiaodichnhadat.command.SaveCommand;
 import nhom8.qlgiaodichnhadat.domain.IGiaoDichManager;
 import nhom8.qlgiaodichnhadat.domain.entities.GiaoDich;
+import nhom8.qlgiaodichnhadat.pattern.command.Command;
 import nhom8.qlgiaodichnhadat.presentation.views.MainWindow;
 import nhom8.qlgiaodichnhadat.presentation.views.objectgetters.ObjectGetter;
 
 public class SaveController implements ActionListener {
     // FIELDS:
     private MainWindow mainWindow;
-
+    
     // CONSTRUCTORS:
     public SaveController(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
@@ -30,20 +32,10 @@ public class SaveController implements ActionListener {
         // Get domain object
         IGiaoDichManager domain = mainWindow.getDomain();
 
-        // Check giaoDich exist in DB
-        GiaoDich gd = domain.getGiaoDich(giaoDich.getMaGiaoDich());
-        if (gd != null) {
-            // Check if gd's type is different from giaoDich's type
-            if (gd.getClass() != giaoDich.getClass()) {
-                // Remove gd
-                domain.removeGiaoDichs(gd);
-            }
-        }
+        // Create command
+        Command command = new SaveCommand(domain, giaoDich);
 
-        // Add GiaoDich object using domain
-        domain.saveGiaoDichs(giaoDich);
-
-        // Refresh view's data
-        domain.getAllGiaoDichs();
+        // Execute command
+        command.execute();
     }
 }

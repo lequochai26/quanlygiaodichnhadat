@@ -5,7 +5,9 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 
+import nhom8.qlgiaodichnhadat.command.CountAllCommand;
 import nhom8.qlgiaodichnhadat.domain.IGiaoDichManager;
+import nhom8.qlgiaodichnhadat.pattern.command.Command;
 import nhom8.qlgiaodichnhadat.presentation.views.MainWindow;
 
 public class CountAllController implements ActionListener {
@@ -23,15 +25,10 @@ public class CountAllController implements ActionListener {
         // Get domain
         IGiaoDichManager domain = mainWindow.getDomain();
 
-        // Count all
-        int count = domain.countAllGiaoDichs();
+        // Create command
+        Command command = new CountAllCommand(mainWindow, domain);
 
-        // Show information message
-        JOptionPane.showMessageDialog(
-            mainWindow,
-            "Tổng số lượng tất cả giao dịch: " + count,
-            "Số lượng giao dịch",
-            JOptionPane.INFORMATION_MESSAGE
-        );
+        // Execute command
+        command.execute();
     }
 }

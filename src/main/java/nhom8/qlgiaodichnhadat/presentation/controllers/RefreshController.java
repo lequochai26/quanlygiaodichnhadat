@@ -4,7 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+import nhom8.qlgiaodichnhadat.command.RefreshCommand;
 import nhom8.qlgiaodichnhadat.domain.IGiaoDichManager;
+import nhom8.qlgiaodichnhadat.pattern.command.Command;
 import nhom8.qlgiaodichnhadat.presentation.views.MainWindow;
 
 public class RefreshController implements ActionListener {
@@ -22,7 +24,10 @@ public class RefreshController implements ActionListener {
         // Get domain
         IGiaoDichManager domain = mainWindow.getDomain();
 
-        // Tells domain to get all giaodich data
-        List all = domain.getAllGiaoDichs();
+        // Create command
+        Command command = new RefreshCommand(domain);
+
+        // Execute command
+        command.execute();
     }
 }

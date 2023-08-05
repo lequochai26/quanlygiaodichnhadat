@@ -5,7 +5,9 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 
+import nhom8.qlgiaodichnhadat.command.AverageAllCommand;
 import nhom8.qlgiaodichnhadat.domain.IGiaoDichManager;
+import nhom8.qlgiaodichnhadat.pattern.command.Command;
 import nhom8.qlgiaodichnhadat.presentation.views.MainWindow;
 
 public class AverageAllController implements ActionListener {
@@ -23,15 +25,10 @@ public class AverageAllController implements ActionListener {
         // Get domain
         IGiaoDichManager domain = mainWindow.getDomain();
 
-        // Average all
-        double result = domain.averageThanhTienAll();
+        // Create command
+        Command command = new AverageAllCommand(mainWindow, domain);
 
-        // Show message dialog
-        JOptionPane.showMessageDialog(
-            mainWindow,
-            "Trung bình thành tiền tất cả giao dịch: " + result,
-            "Trung bình thành tiền",
-            JOptionPane.INFORMATION_MESSAGE
-        );
+        // Execute command
+        command.execute();
     }
 }

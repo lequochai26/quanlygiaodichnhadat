@@ -6,7 +6,9 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import nhom8.qlgiaodichnhadat.command.SearchByKeyWordCommand;
 import nhom8.qlgiaodichnhadat.domain.IGiaoDichManager;
+import nhom8.qlgiaodichnhadat.pattern.command.Command;
 import nhom8.qlgiaodichnhadat.presentation.views.MainWindow;
 
 public class SearchByKeyWordController implements ActionListener {
@@ -21,23 +23,13 @@ public class SearchByKeyWordController implements ActionListener {
     // METHODS:
     @Override
     public void actionPerformed(ActionEvent e) {
-        // Show input dialog
-        String keyWord = JOptionPane.showInputDialog(
-            mainWindow,
-            "Nhập từ khóa: ",
-            "Tìm kiếm",
-            JOptionPane.INFORMATION_MESSAGE
-        );
-
-        // Check if keyWord is null
-        if (keyWord == null) {
-            return;
-        }
-
         // Get domain
         IGiaoDichManager domain = mainWindow.getDomain();
 
-        // Tells domain to get giaodich data by keyWord
-        domain.getGiaoDichsByKeyWord(keyWord);
+        // Create command
+        Command command = new SearchByKeyWordCommand(mainWindow, domain);
+
+        // Execute command
+        command.execute();
     }
 }

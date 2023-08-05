@@ -551,6 +551,11 @@ public class MainWindow extends JFrame implements GUI, PropertyChangeListener {
         // Get selected row
         int row = tblData.getSelectedRow();
 
+        // Check row
+        if (row == -1) {
+            return;
+        }
+
         // Get necessary informations
         String tenLoaiGiaoDich = (String)tblData.getValueAt(row, 0);
         int maGiaoDich = (int)tblData.getValueAt(row, 1);
