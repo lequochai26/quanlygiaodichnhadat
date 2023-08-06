@@ -26,8 +26,6 @@ import javax.swing.JSpinner;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-
 import nhom8.qlgiaodichnhadat.domain.GiaoDichManager;
 import nhom8.qlgiaodichnhadat.domain.IGiaoDichManager;
 import nhom8.qlgiaodichnhadat.domain.entities.GiaoDich;
@@ -35,26 +33,29 @@ import nhom8.qlgiaodichnhadat.domain.entities.GiaoDichDat;
 import nhom8.qlgiaodichnhadat.domain.entities.GiaoDichNha;
 import nhom8.qlgiaodichnhadat.domain.entities.enums.LoaiDat;
 import nhom8.qlgiaodichnhadat.domain.entities.enums.LoaiNha;
+import nhom8.qlgiaodichnhadat.memento.CareTaker;
+import nhom8.qlgiaodichnhadat.memento.GDMMemento;
+import nhom8.qlgiaodichnhadat.memento.Originator;
 import nhom8.qlgiaodichnhadat.pattern.observer.ISubject;
 import nhom8.qlgiaodichnhadat.presentation.GUI;
 import nhom8.qlgiaodichnhadat.presentation.controllers.AverageAllController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.AverageByTypeController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.CountAllController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.CountByTypeController;
+import nhom8.qlgiaodichnhadat.presentation.controllers.RedoController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.RefreshController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.RemoveController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.SaveController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.SearchByKeyWordController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.SearchByTypeController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.SearchInRangeOfDateController;
+import nhom8.qlgiaodichnhadat.presentation.controllers.UndoController;
 import nhom8.qlgiaodichnhadat.presentation.views.objectgetters.MainWindowGiaoDichGetter;
 import nhom8.qlgiaodichnhadat.presentation.views.objectgetters.ObjectGetter;
 import nhom8.qlgiaodichnhadat.presentation.views.objectholders.ClassObjectHolder;
 import nhom8.qlgiaodichnhadat.presentation.views.objectholders.ObjectHolder;
 
 import javax.swing.SpinnerDateModel;
-import javax.swing.SpinnerModel;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Calendar;
@@ -66,6 +67,8 @@ public class MainWindow extends JFrame implements GUI, PropertyChangeListener {
 
     private IGiaoDichManager domain;
     private ISubject publisher;
+    private Originator<GDMMemento> domainOriginator;
+    private CareTaker<GDMMemento> domainCareTaker;
 
     private JMenuBar menuBar;
     private JPanel mainPanel;
@@ -121,6 +124,12 @@ public class MainWindow extends JFrame implements GUI, PropertyChangeListener {
         this.publisher = domain;
         publisher.addPropertyChangeListener(this);
 
+        // Domain originator definition
+        domainOriginator = domain;
+
+        // Domain care taker definition
+        domainCareTaker = domain.getCareTaker();
+
         // View configurations
         setFont(new Font("Arial", Font.PLAIN, 14));
         setTitle("Quản lý giao dịch nhà đất");
@@ -149,9 +158,15 @@ public class MainWindow extends JFrame implements GUI, PropertyChangeListener {
 
         mniHoanTac = new JMenuItem("Hoàn tác");
         mnHanhDong.add(mniHoanTac);
+        mniHoanTac.addActionListener(
+            new UndoController(this)
+        );
 
         mniLamLai = new JMenuItem("Làm lại");
         mnHanhDong.add(mniLamLai);
+        mniLamLai.addActionListener(
+            new RedoController(this)
+        );
 
         JMenu mnTimKiem = new JMenu("Tìm kiếm");
         menuBar.add(mnTimKiem);
@@ -653,13 +668,13 @@ public class MainWindow extends JFrame implements GUI, PropertyChangeListener {
     }   
 
     private void startup() {
-        // Get all GiaoDich objects
-        List all = domain.getAllGiaoDichs();
+        // Load data
+        domain.getAllGiaoDichs();
 
-        // Check all and update tblData
-        if (all != null) {
-            setData(all);
-        }
+        // Save first memento
+        domainCareTaker.addDone(
+            domainOriginator.saveMemento()
+        );
     }
 
     public ObjectGetter getGiaoDichGetter() {
@@ -668,6 +683,14 @@ public class MainWindow extends JFrame implements GUI, PropertyChangeListener {
 
     public IGiaoDichManager getDomain() {
         return domain;
+    }
+
+    public Originator<GDMMemento> getDomainOriginator() {
+        return domainOriginator;
+    }
+
+    public CareTaker<GDMMemento> getDomainCareTaker() {
+        return domainCareTaker;
     }
 
     public JTable getTblData() {

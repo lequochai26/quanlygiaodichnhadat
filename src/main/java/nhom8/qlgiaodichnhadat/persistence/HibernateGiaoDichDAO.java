@@ -42,6 +42,7 @@ public class HibernateGiaoDichDAO implements GiaoDichDAO {
         }
         catch (Exception e) {
             errorNotifier.notify(e);
+            return;
         }
     }
 
@@ -144,6 +145,66 @@ public class HibernateGiaoDichDAO implements GiaoDichDAO {
         }
         catch (Exception e2) {
             errorNotifier.notify(e2);
+        }
+
+        // Check and close session
+        if (session != null) {
+            if (session.isOpen()) {
+                session.close();
+            }
+        }
+    }
+
+    @Override
+    public void clearGiaoDichs() {
+        // Check session factory
+        if (sessionFactory == null) {
+            errorNotifier.notify(
+                "Session factory not found!"
+            );
+            return;
+        }
+
+        // Session declaration
+        Session session = null;
+
+        // Transaction declaration
+        Transaction transaction = null;
+
+        try {
+            // Open session
+            session = sessionFactory.openSession();
+
+            // HQL command initialization
+            String hql = "DELETE FROM GiaoDich";
+
+            // Create query
+            Query query = session.createQuery(hql);
+
+            // Begin transaction
+            transaction = session.beginTransaction();
+
+            // Execute update query
+            query.executeUpdate();
+
+            // Commit
+            transaction.commit();
+        }
+        catch (RollbackException e) {
+            errorNotifier.notify(e);
+            
+            if (transaction != null) {
+                try {
+                    // Rollback
+                    transaction.rollback();
+                }
+                catch (Exception ex) {
+                    errorNotifier.notify(ex);
+                }
+            }
+        }
+        catch (Exception e) {
+            errorNotifier.notify(e);
         }
 
         // Check and close session

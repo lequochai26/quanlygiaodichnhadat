@@ -7,6 +7,7 @@ import nhom8.qlgiaodichnhadat.domain.entities.GiaoDich;
 public interface IGiaoDichDBHandler {
     void saveGiaoDichs(GiaoDich... giaoDichs);
     void removeGiaoDichs(GiaoDich... giaoDichs);
+    void clearGiaoDichs();
     GiaoDich getGiaoDich(int maGiaoDich);
     List getAllGiaoDichs();
 }

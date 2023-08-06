@@ -4,23 +4,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.query.Query;
-
 import nhom8.qlgiaodichnhadat.domain.entities.GiaoDich;
+import nhom8.qlgiaodichnhadat.memento.CareTaker;
+import nhom8.qlgiaodichnhadat.memento.GDMMemento;
+import nhom8.qlgiaodichnhadat.memento.Originator;
 import nhom8.qlgiaodichnhadat.pattern.observer.Subject;
 import nhom8.qlgiaodichnhadat.persistence.IGiaoDichDBHandler;
 import nhom8.qlgiaodichnhadat.persistence.GiaoDichDBHandler;
 import nhom8.qlgiaodichnhadat.persistence.HibernateGiaoDichDAO;
 
-public class GiaoDichManager extends Subject implements IGiaoDichManager {
+public class GiaoDichManager extends Subject implements IGiaoDichManager, Originator<GDMMemento> {
     // FIELDS:
     private IGiaoDichDBHandler dbHandler;
+
+    private CareTaker<GDMMemento> careTaker;
 
     private List data;
 
@@ -33,6 +30,9 @@ public class GiaoDichManager extends Subject implements IGiaoDichManager {
         dbHandler = new GiaoDichDBHandler(
             new HibernateGiaoDichDAO()
         );
+
+        // Care taker initialization
+        careTaker = new CareTaker<GDMMemento>();
     }
 
     // METHODS:
@@ -266,6 +266,30 @@ public class GiaoDichManager extends Subject implements IGiaoDichManager {
         return result;
     }
 
+    @Override
+    public GDMMemento saveMemento() {
+        return new GDMMemento(data);
+    }
+
+    @Override
+    public void applyMemento(GDMMemento memento) {
+        // Clear db
+        dbHandler.clearGiaoDichs();
+
+        // Get memento's data
+        List data = memento.getData();
+        
+        // Turns data into an array of GiaoDich objects
+        GiaoDich[] giaoDichs = new GiaoDich[]{};
+        giaoDichs = ((List<GiaoDich>)data).toArray(giaoDichs);
+
+        // Save giaoDichs
+        dbHandler.saveGiaoDichs(giaoDichs);
+
+        // Set data
+        this.setData(data);
+    }
+
     public void setData(List data) {
         // Check data null
         if (data == null) {
@@ -285,5 +309,9 @@ public class GiaoDichManager extends Subject implements IGiaoDichManager {
             newValue,
             oldValue
         );
+    }
+
+    public CareTaker<GDMMemento> getCareTaker() {
+        return careTaker;
     }
 }

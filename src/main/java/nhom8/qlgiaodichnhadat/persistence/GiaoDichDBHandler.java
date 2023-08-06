@@ -25,6 +25,11 @@ public class GiaoDichDBHandler implements IGiaoDichDBHandler {
     }
 
     @Override
+    public void clearGiaoDichs() {
+        dao.clearGiaoDichs();
+    }
+
+    @Override
     public GiaoDich getGiaoDich(int maGiaoDich) {
         return dao.getGiaoDich(maGiaoDich);
     }

@@ -7,6 +7,8 @@ import java.util.List;
 import nhom8.qlgiaodichnhadat.command.RemoveCommand;
 import nhom8.qlgiaodichnhadat.domain.IGiaoDichManager;
 import nhom8.qlgiaodichnhadat.domain.entities.GiaoDich;
+import nhom8.qlgiaodichnhadat.memento.CareTaker;
+import nhom8.qlgiaodichnhadat.memento.Originator;
 import nhom8.qlgiaodichnhadat.pattern.command.Command;
 import nhom8.qlgiaodichnhadat.presentation.views.MainWindow;
 import nhom8.qlgiaodichnhadat.presentation.views.objectgetters.ObjectGetter;
@@ -31,9 +33,15 @@ public class RemoveController implements ActionListener {
 
         // Get domain
         IGiaoDichManager domain = mainWindow.getDomain();
+
+        // Get domain originator
+        Originator originator = mainWindow.getDomainOriginator();
+
+        // Get domain care taker
+        CareTaker careTaker = mainWindow.getDomainCareTaker();
         
         // Create command
-        Command command = new RemoveCommand(domain, giaoDich);
+        Command command = new RemoveCommand(domain, giaoDich, originator, careTaker);
 
         // Execute command
         command.execute();
