@@ -46,6 +46,7 @@ import nhom8.qlgiaodichnhadat.presentation.controllers.RedoController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.RefreshController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.RemoveController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.SaveController;
+import nhom8.qlgiaodichnhadat.presentation.controllers.SearchByIdController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.SearchByKeyWordController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.SearchByTypeController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.SearchInRangeOfDateController;
@@ -88,6 +89,7 @@ public class MainWindow extends JFrame implements GUI, PropertyChangeListener {
     private JMenuItem mniDong;
     private JMenuItem mniHoanTac;
     private JMenuItem mniLamLai;
+    private JMenuItem mniTimKiemMa;
     private JMenuItem mniTimKiemTuKhoa;
     private JMenuItem mniTimKiemGDDat;
     private JMenuItem mniTimKiemGDNha;
@@ -170,6 +172,12 @@ public class MainWindow extends JFrame implements GUI, PropertyChangeListener {
 
         JMenu mnTimKiem = new JMenu("Tìm kiếm");
         menuBar.add(mnTimKiem);
+
+        mniTimKiemMa = new JMenuItem("Mã");
+        mnTimKiem.add(mniTimKiemMa);
+        mniTimKiemMa.addActionListener(
+            new SearchByIdController(this)
+        );
 
         mniTimKiemTuKhoa = new JMenuItem("Từ khóa");
         mnTimKiem.add(mniTimKiemTuKhoa);

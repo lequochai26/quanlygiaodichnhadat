@@ -183,7 +183,20 @@ public class GiaoDichManager extends Subject implements IGiaoDichManager, Origin
 
     @Override
     public GiaoDich getGiaoDich(int maGiaoDich) {
-        return dbHandler.getGiaoDich(maGiaoDich);
+        // Get
+        GiaoDich target = dbHandler.getGiaoDich(maGiaoDich);
+
+        // Data initialization
+        List data = new ArrayList();
+
+        // Add target into data
+        data.add(target);
+
+        // Set data
+        this.setData(data);
+
+        // Return target
+        return target;
     }
 
     @Override
