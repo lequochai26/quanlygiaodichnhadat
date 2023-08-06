@@ -14,13 +14,13 @@ import org.hibernate.query.Query;
 
 import nhom8.qlgiaodichnhadat.domain.entities.GiaoDich;
 import nhom8.qlgiaodichnhadat.pattern.observer.Subject;
+import nhom8.qlgiaodichnhadat.persistence.IGiaoDichDBHandler;
 import nhom8.qlgiaodichnhadat.persistence.GiaoDichDBHandler;
-import nhom8.qlgiaodichnhadat.persistence.GiaoDichDBHandlerImpl;
 import nhom8.qlgiaodichnhadat.persistence.HibernateGiaoDichDAO;
 
 public class GiaoDichManager extends Subject implements IGiaoDichManager {
     // FIELDS:
-    private GiaoDichDBHandler dbHandler;
+    private IGiaoDichDBHandler dbHandler;
 
     private List data;
 
@@ -30,7 +30,7 @@ public class GiaoDichManager extends Subject implements IGiaoDichManager {
         super();
 
         // DBHandler initialization
-        dbHandler = new GiaoDichDBHandlerImpl(
+        dbHandler = new GiaoDichDBHandler(
             new HibernateGiaoDichDAO()
         );
     }

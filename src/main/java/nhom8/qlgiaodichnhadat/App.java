@@ -1,6 +1,7 @@
 package nhom8.qlgiaodichnhadat;
 
 import javax.swing.UIManager;
+
 import nhom8.qlgiaodichnhadat.presentation.GUI;
 import nhom8.qlgiaodichnhadat.presentation.views.MainWindow;
 
