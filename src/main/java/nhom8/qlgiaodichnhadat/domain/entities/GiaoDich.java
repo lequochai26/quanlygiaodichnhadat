@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import nhom8.qlgiaodichnhadat.persistence.dto.GiaoDichData;
+
 @Entity (name = "GiaoDich")
 @Table (name = "GiaoDich")
 public abstract class GiaoDich {
@@ -37,7 +39,36 @@ public abstract class GiaoDich {
     }
 
     // METHODS:
+    @Override
+    public String toString() {
+        return "GiaoDich{" +
+                "maGiaoDich='" + maGiaoDich + '\'' +
+                ", ngayGiaoDich='" + new Date(ngayGiaoDich.getTime()) + '\'' +
+                ", donGia=" + donGia +
+                ", dienTich=" + dienTich +
+                '}';
+    }
+
     public abstract double tinhThanhTien();
+    
+    public void loadData(GiaoDichData data) {
+        maGiaoDich = data.getMaGiaoDich();
+        ngayGiaoDich = data.getNgayGiaoDich();
+        donGia = data.getDonGia();
+        dienTich = data.getDienTich();
+    }
+
+    public GiaoDichData getData() {
+        // New data
+        GiaoDichData data = new GiaoDichData();
+        data.setMaGiaoDich(maGiaoDich);
+        data.setNgayGiaoDich(ngayGiaoDich);
+        data.setDonGia(donGia);
+        data.setDienTich(dienTich);
+
+        // Return
+        return data;
+    }
 
     public boolean matches(String keyWord) {
         // Check keyWord
@@ -68,16 +99,6 @@ public abstract class GiaoDich {
             donGia.contains(keyWord) ||
             dienTich.contains(keyWord)
         );
-    }
-
-    @Override
-    public String toString() {
-        return "GiaoDich{" +
-                "maGiaoDich='" + maGiaoDich + '\'' +
-                ", ngayGiaoDich='" + new Date(ngayGiaoDich.getTime()) + '\'' +
-                ", donGia=" + donGia +
-                ", dienTich=" + dienTich +
-                '}';
     }
 
     public int getMaGiaoDich() {

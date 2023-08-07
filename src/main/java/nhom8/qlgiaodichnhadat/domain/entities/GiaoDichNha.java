@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import nhom8.qlgiaodichnhadat.domain.entities.enums.LoaiNha;
+import nhom8.qlgiaodichnhadat.persistence.dto.GiaoDichData;
 
 @Entity (name = "GiaoDichNha")
 @Table (name = "GiaoDich")
@@ -32,6 +33,18 @@ public class GiaoDichNha extends GiaoDich {
 
     // METHODS:
     @Override
+    public String toString() {
+        return "GiaoDichNha{" +
+                "maGiaoDich='" + maGiaoDich + '\'' +
+                ", ngayGiaoDich='" + new Date(ngayGiaoDich.getTime()) + '\'' +
+                ", donGia=" + donGia +
+                ", dienTich=" + dienTich +
+                ", loaiNha='" + loaiNha + '\'' +
+                ", diaChi='" + diaChi + '\'' +
+                '}';
+    }
+
+    @Override
     public double tinhThanhTien() {
         if (loaiNha == LoaiNha.CAOCAP) {
             return (dienTich * donGia);
@@ -42,6 +55,30 @@ public class GiaoDichNha extends GiaoDich {
         }
 
         return 0;
+    }
+
+    @Override
+    public void loadData(GiaoDichData data) {
+        // Load super class's data
+        super.loadData(data);
+
+        // Load additional data
+        loaiNha = LoaiNha.valueOf(data.getLoaiNha());
+        diaChi = data.getDiaChi();
+    }
+
+    @Override
+    public GiaoDichData getData() {
+        // Get super class's data
+        GiaoDichData data = super.getData();
+
+        // Additional data assignment
+        data.setLoaiGiaoDich(getClass().getName());
+        data.setLoaiNha(loaiNha.toString());
+        data.setDiaChi(diaChi);
+
+        // Return
+        return data;
     }
 
     @Override
@@ -69,18 +106,6 @@ public class GiaoDichNha extends GiaoDich {
             loaiNha.contains(keyWord) ||
             diaChi.contains(keyWord) 
         );
-    }
-
-    @Override
-    public String toString() {
-        return "GiaoDichNha{" +
-                "maGiaoDich='" + maGiaoDich + '\'' +
-                ", ngayGiaoDich='" + new Date(ngayGiaoDich.getTime()) + '\'' +
-                ", donGia=" + donGia +
-                ", dienTich=" + dienTich +
-                ", loaiNha='" + loaiNha + '\'' +
-                ", diaChi='" + diaChi + '\'' +
-                '}';
     }
 
     public LoaiNha getLoaiNha() {

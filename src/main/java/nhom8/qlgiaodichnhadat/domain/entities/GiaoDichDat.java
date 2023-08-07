@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import nhom8.qlgiaodichnhadat.domain.entities.enums.LoaiDat;
+import nhom8.qlgiaodichnhadat.persistence.dto.GiaoDichData;
 
 @Entity (name = "GiaoDichDat")
 @Table (name = "GiaoDich")
@@ -28,6 +29,17 @@ public class GiaoDichDat extends GiaoDich {
 
     // METHODS:
     @Override
+    public String toString() {
+        return "GiaoDichDat{" +
+                "maGiaoDich='" + maGiaoDich + '\'' +
+                ", ngayGiaoDich='" + new Date(ngayGiaoDich.getTime()) + '\'' +
+                ", donGia=" + donGia +
+                ", dienTich=" + dienTich +
+                ", loaiDat='" + loaiDat + '\'' +
+                '}';
+    }
+
+    @Override
     public double tinhThanhTien() {
         if (loaiDat == LoaiDat.B || loaiDat == LoaiDat.C) {
             return (dienTich * donGia);
@@ -38,6 +50,28 @@ public class GiaoDichDat extends GiaoDich {
         }
 
         return 0;
+    }
+
+    @Override
+    public void loadData(GiaoDichData data) {
+        // Load super class's data
+        super.loadData(data);
+
+        // Load additional data
+        loaiDat = LoaiDat.valueOf(data.getLoaiDat());
+    }
+
+    @Override
+    public GiaoDichData getData() {
+        // Get data from super class's
+        GiaoDichData data = super.getData();
+        
+        // Additional data assignments
+        data.setLoaiGiaoDich(getClass().getName());
+        data.setLoaiDat(loaiDat.toString());
+
+        // Return
+        return data;
     }
 
     @Override
@@ -59,17 +93,6 @@ public class GiaoDichDat extends GiaoDich {
             loaiGiaoDich.contains(keyWord) ||
             loaiDat.contains(keyWord)
         );
-    }
-
-    @Override
-    public String toString() {
-        return "GiaoDichDat{" +
-                "maGiaoDich='" + maGiaoDich + '\'' +
-                ", ngayGiaoDich='" + new Date(ngayGiaoDich.getTime()) + '\'' +
-                ", donGia=" + donGia +
-                ", dienTich=" + dienTich +
-                ", loaiDat='" + loaiDat + '\'' +
-                '}';
     }
 
     public LoaiDat getLoaiDat() {

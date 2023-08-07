@@ -14,6 +14,7 @@ import org.hibernate.query.Query;
 import nhom8.qlgiaodichnhadat.domain.entities.GiaoDich;
 import nhom8.qlgiaodichnhadat.notifiers.ErrorNotifier;
 import nhom8.qlgiaodichnhadat.notifiers.Notifier;
+import nhom8.qlgiaodichnhadat.persistence.dto.GiaoDichData;
 
 public class HibernateGiaoDichDAO implements GiaoDichDAO {
     // FIELDS:
@@ -48,7 +49,7 @@ public class HibernateGiaoDichDAO implements GiaoDichDAO {
 
     // METHODS:
     @Override
-    public void saveGiaoDichs(GiaoDich... giaoDichs) {
+    public void saveGiaoDichs(GiaoDichData... giaoDichs) {
         // Check session factory
         if (sessionFactory == null) {
             errorNotifier.notify(
@@ -71,7 +72,7 @@ public class HibernateGiaoDichDAO implements GiaoDichDAO {
             transaction = session.beginTransaction();
 
             // Save giaoDichs
-            for (GiaoDich giaoDich : giaoDichs) {
+            for (GiaoDichData giaoDich : giaoDichs) {
                 session.saveOrUpdate(giaoDich);
             }
 
@@ -102,7 +103,7 @@ public class HibernateGiaoDichDAO implements GiaoDichDAO {
     }
 
     @Override
-    public void removeGiaoDichs(GiaoDich... giaoDichs) {
+    public void removeGiaoDichs(GiaoDichData... giaoDichs) {
         // Check session factory
         if (sessionFactory == null) {
             errorNotifier.notify(
@@ -125,7 +126,7 @@ public class HibernateGiaoDichDAO implements GiaoDichDAO {
             transaction = session.beginTransaction();
 
             // Remove giaoDichs
-            for (GiaoDich giaoDich : giaoDichs) {
+            for (GiaoDichData giaoDich : giaoDichs) {
                 session.remove(giaoDich);
             }
 
@@ -216,9 +217,9 @@ public class HibernateGiaoDichDAO implements GiaoDichDAO {
     }
 
     @Override
-    public GiaoDich getGiaoDich(int maGiaoDich) {
+    public GiaoDichData getGiaoDich(int maGiaoDich) {
         // Target declaration
-        GiaoDich target = null;
+        GiaoDichData target = null;
 
         // Check session factory
         if (sessionFactory == null) {
@@ -250,7 +251,7 @@ public class HibernateGiaoDichDAO implements GiaoDichDAO {
             // Check and get target
             if (list != null) {
                 if (list.size() > 0) {
-                    target = (GiaoDich)list.get(0);
+                    target = (GiaoDichData)list.get(0);
                 }
             }
         }

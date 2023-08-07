@@ -23,8 +23,6 @@
         <property name="hbm2ddl.auto">update</property>
 
         <!-- Mapping classes -->
-        <mapping class="nhom8.qlgiaodichnhadat.domain.entities.GiaoDich"/>
-        <mapping class="nhom8.qlgiaodichnhadat.domain.entities.GiaoDichDat"/>
-        <mapping class="nhom8.qlgiaodichnhadat.domain.entities.GiaoDichNha"/>
+        <mapping class="nhom8.qlgiaodichnhadat.persistence.dto.GiaoDichData"/>
     </session-factory>
 </hibernate-configuration>

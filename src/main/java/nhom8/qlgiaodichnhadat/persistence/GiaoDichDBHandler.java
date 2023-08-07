@@ -3,6 +3,7 @@ package nhom8.qlgiaodichnhadat.persistence;
 import java.util.List;
 
 import nhom8.qlgiaodichnhadat.domain.entities.GiaoDich;
+import nhom8.qlgiaodichnhadat.persistence.dto.GiaoDichData;
 
 public class GiaoDichDBHandler implements IGiaoDichDBHandler {
     // FIELDS:
@@ -15,12 +16,12 @@ public class GiaoDichDBHandler implements IGiaoDichDBHandler {
 
     // METHODS:
     @Override
-    public void saveGiaoDichs(GiaoDich... giaoDichs) {
+    public void saveGiaoDichs(GiaoDichData... giaoDichs) {
         dao.saveGiaoDichs(giaoDichs);
     }
 
     @Override
-    public void removeGiaoDichs(GiaoDich... giaoDichs) {
+    public void removeGiaoDichs(GiaoDichData... giaoDichs) {
         dao.removeGiaoDichs(giaoDichs);
     }
 
@@ -30,7 +31,7 @@ public class GiaoDichDBHandler implements IGiaoDichDBHandler {
     }
 
     @Override
-    public GiaoDich getGiaoDich(int maGiaoDich) {
+    public GiaoDichData getGiaoDich(int maGiaoDich) {
         return dao.getGiaoDich(maGiaoDich);
     }
 

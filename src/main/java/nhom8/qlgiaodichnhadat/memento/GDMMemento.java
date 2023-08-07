@@ -2,17 +2,19 @@ package nhom8.qlgiaodichnhadat.memento;
 
 import java.util.List;
 
+import nhom8.qlgiaodichnhadat.domain.entities.GiaoDich;
+
 public class GDMMemento {
     // FIELDS:
-    private List data;
+    private List<GiaoDich> data;
 
     // CONSTRUCTORS:
-    public GDMMemento(List data) {
+    public GDMMemento(List<GiaoDich> data) {
         this.data = data;
     }
 
     // METHODS:
-    public List getData() {
+    public List<GiaoDich> getData() {
         return data;
     }
 }
