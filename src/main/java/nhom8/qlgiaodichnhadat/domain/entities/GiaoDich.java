@@ -52,8 +52,10 @@ public abstract class GiaoDich {
         String loaiGiaoDich = this.getClass().getSimpleName().toLowerCase();
         String maGiaoDich = "" + this.maGiaoDich;
         String ngayGiaoDich = (
-            this.ngayGiaoDich != null ?
-            this.ngayGiaoDich.toString().toLowerCase() :
+            this.ngayGiaoDich != null
+            ?
+            new Date(this.ngayGiaoDich.getTime()).toString().toLowerCase()
+            :
             ""
         );
         String donGia = "" + this.donGia;
@@ -72,7 +74,7 @@ public abstract class GiaoDich {
     public String toString() {
         return "GiaoDich{" +
                 "maGiaoDich='" + maGiaoDich + '\'' +
-                ", ngayGiaoDich='" + ngayGiaoDich + '\'' +
+                ", ngayGiaoDich='" + new Date(ngayGiaoDich.getTime()) + '\'' +
                 ", donGia=" + donGia +
                 ", dienTich=" + dienTich +
                 '}';

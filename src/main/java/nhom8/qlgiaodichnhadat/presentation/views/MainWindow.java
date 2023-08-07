@@ -40,12 +40,15 @@ import nhom8.qlgiaodichnhadat.pattern.observer.ISubject;
 import nhom8.qlgiaodichnhadat.presentation.GUI;
 import nhom8.qlgiaodichnhadat.presentation.controllers.AverageAllController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.AverageByTypeController;
+import nhom8.qlgiaodichnhadat.presentation.controllers.CheckHashController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.CountAllController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.CountByTypeController;
+import nhom8.qlgiaodichnhadat.presentation.controllers.GetHashController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.RedoController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.RefreshController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.RemoveController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.SaveController;
+import nhom8.qlgiaodichnhadat.presentation.controllers.SearchByHashController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.SearchByIdController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.SearchByKeyWordController;
 import nhom8.qlgiaodichnhadat.presentation.controllers.SearchByTypeController;
@@ -94,7 +97,11 @@ public class MainWindow extends JFrame implements GUI, PropertyChangeListener {
     private JMenuItem mniTimKiemGDDat;
     private JMenuItem mniTimKiemGDNha;
     private JMenuItem mniTimKiemKhoangTG;
+    private JMenuItem mniTimKiemMaBam;
     private JMenuItem mniLamMoi;
+    private JMenu mnDuLieu;
+    private JMenuItem mniMaBam;
+    private JMenuItem mniKiemTra;
     private JMenuItem mniSoLuongTatCa;
     private JMenuItem mniSoLuongGDDat;
     private JMenuItem mniSoLuongGDNha;
@@ -206,10 +213,31 @@ public class MainWindow extends JFrame implements GUI, PropertyChangeListener {
             new SearchInRangeOfDateController(this)
         );
 
+        mniTimKiemMaBam = new JMenuItem("Mã băm");
+        mnTimKiem.add(mniTimKiemMaBam);
+        mniTimKiemMaBam.addActionListener(
+            new SearchByHashController(this)
+        );
+
         mniLamMoi = new JMenuItem("Làm mới");
         mnTimKiem.add(mniLamMoi);
         mniLamMoi.addActionListener(
             new RefreshController(this)
+        );
+
+        mnDuLieu = new JMenu("Dữ liệu");
+        menuBar.add(mnDuLieu);
+
+        mniMaBam = new JMenuItem("Mã băm");
+        mnDuLieu.add(mniMaBam);
+        mniMaBam.addActionListener(
+            new GetHashController(this)
+        );
+
+        mniKiemTra = new JMenuItem("Kiểm tra");
+        mnDuLieu.add(mniKiemTra);
+        mniKiemTra.addActionListener(
+            new CheckHashController(this)
         );
 
         JMenu mnSoLuong = new JMenu("Số lượng");

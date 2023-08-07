@@ -75,7 +75,7 @@ public class GiaoDichNha extends GiaoDich {
     public String toString() {
         return "GiaoDichNha{" +
                 "maGiaoDich='" + maGiaoDich + '\'' +
-                ", ngayGiaoDich='" + ngayGiaoDich + '\'' +
+                ", ngayGiaoDich='" + new Date(ngayGiaoDich.getTime()) + '\'' +
                 ", donGia=" + donGia +
                 ", dienTich=" + dienTich +
                 ", loaiNha='" + loaiNha + '\'' +

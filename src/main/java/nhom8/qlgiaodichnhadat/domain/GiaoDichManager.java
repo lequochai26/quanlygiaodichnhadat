@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 import nhom8.qlgiaodichnhadat.domain.entities.GiaoDich;
+import nhom8.qlgiaodichnhadat.hash.ObjectHasher;
+import nhom8.qlgiaodichnhadat.hash.SHA256ObjectHasher;
 import nhom8.qlgiaodichnhadat.memento.CareTaker;
 import nhom8.qlgiaodichnhadat.memento.GDMMemento;
 import nhom8.qlgiaodichnhadat.memento.Originator;
@@ -189,13 +191,61 @@ public class GiaoDichManager extends Subject implements IGiaoDichManager, Origin
         // Data initialization
         List data = new ArrayList();
 
-        // Add target into data
-        data.add(target);
+        // Check and add target into data
+        if (target != null) {
+            data.add(target);
+        }
 
         // Set data
         this.setData(data);
 
         // Return target
+        return target;
+    }
+
+    @Override
+    public GiaoDich getGiaoDich(String hash) {
+        // Target declaration
+        GiaoDich target = null;
+
+        // Load data
+        List data = dbHandler.getAllGiaoDichs();
+
+        // Check data null
+        if (data != null) {
+            // Get hasher
+            ObjectHasher hasher = SHA256ObjectHasher.getInstance();
+
+            // Filtering
+            for (Object obj : data) {
+                // Hash obj
+                String objHash = hasher.hashObject(obj);
+
+                // Check if objHash is different from hash
+                if (!objHash.equals(hash)) {
+                    continue;
+                }
+
+                // Cast obj to GiaoDich object and assign into target
+                target = (GiaoDich)obj;
+
+                // Break
+                break;
+            }
+        }
+
+        // Filtered data initialization
+        List filteredData = new ArrayList();
+
+        // Check and add target into filteredData
+        if (target != null) {
+            filteredData.add(target);
+        }
+
+        // Set data
+        this.setData(filteredData);
+
+        // Return
         return target;
     }
 

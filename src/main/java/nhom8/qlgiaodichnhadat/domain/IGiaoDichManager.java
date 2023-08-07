@@ -13,6 +13,7 @@ public interface IGiaoDichManager {
     List getGiaoDichsByType(Class type);
     List getGiaoDichsInRangeOfDate(Date start, Date end);
     GiaoDich getGiaoDich(int maGiaoDich);
+    GiaoDich getGiaoDich(String hash);
     int countAllGiaoDichs();
     int countGiaoDichsByType(Class type);
     double averageThanhTienAll();

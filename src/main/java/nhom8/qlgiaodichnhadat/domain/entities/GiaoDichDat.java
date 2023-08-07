@@ -65,7 +65,7 @@ public class GiaoDichDat extends GiaoDich {
     public String toString() {
         return "GiaoDichDat{" +
                 "maGiaoDich='" + maGiaoDich + '\'' +
-                ", ngayGiaoDich='" + ngayGiaoDich + '\'' +
+                ", ngayGiaoDich='" + new Date(ngayGiaoDich.getTime()) + '\'' +
                 ", donGia=" + donGia +
                 ", dienTich=" + dienTich +
                 ", loaiDat='" + loaiDat + '\'' +
