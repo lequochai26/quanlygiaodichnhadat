@@ -60,7 +60,7 @@ public class CheckHashCommand implements Command {
             // Warning notify
             warningNotifier.notify(
                 frame,
-                "Dữ liệu không hớp với chuỗi mã băm!",
+                "Dữ liệu không khớp với chuỗi mã băm!",
                 "Dữ liệu"
             );
         }

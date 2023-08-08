@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import nhom8.qlgiaodichnhadat.command.CommandFacade;
 import nhom8.qlgiaodichnhadat.command.SearchByKeyWordCommand;
 import nhom8.qlgiaodichnhadat.domain.IGiaoDichManager;
 import nhom8.qlgiaodichnhadat.pattern.command.Command;
@@ -26,10 +27,9 @@ public class SearchByKeyWordController implements ActionListener {
         // Get domain
         IGiaoDichManager domain = mainWindow.getDomain();
 
-        // Create command
-        Command command = new SearchByKeyWordCommand(mainWindow, domain);
-
         // Execute command
-        command.execute();
+        CommandFacade
+        .getInstance()
+        .executeSearchByKeyWordCommand(mainWindow, domain);
     }
 }

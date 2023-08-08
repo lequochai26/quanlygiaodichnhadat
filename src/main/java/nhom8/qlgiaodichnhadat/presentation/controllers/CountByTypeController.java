@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 
+import nhom8.qlgiaodichnhadat.command.CommandFacade;
 import nhom8.qlgiaodichnhadat.command.CountByTypeCommand;
 import nhom8.qlgiaodichnhadat.domain.IGiaoDichManager;
 import nhom8.qlgiaodichnhadat.pattern.command.Command;
@@ -27,10 +28,9 @@ public class CountByTypeController implements ActionListener {
         // Get domain
         IGiaoDichManager domain = mainWindow.getDomain();
 
-        // Create command
-        Command command = new CountByTypeCommand(mainWindow, domain, type);
-
         // Execute command
-        command.execute();
+        CommandFacade
+        .getInstance()
+        .executeCountByTypeCommand(mainWindow, domain, type);
     }
 }

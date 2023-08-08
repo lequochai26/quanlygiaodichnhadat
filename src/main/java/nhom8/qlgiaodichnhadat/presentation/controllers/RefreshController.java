@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+import nhom8.qlgiaodichnhadat.command.CommandFacade;
 import nhom8.qlgiaodichnhadat.command.RefreshCommand;
 import nhom8.qlgiaodichnhadat.domain.IGiaoDichManager;
 import nhom8.qlgiaodichnhadat.pattern.command.Command;
@@ -24,10 +25,9 @@ public class RefreshController implements ActionListener {
         // Get domain
         IGiaoDichManager domain = mainWindow.getDomain();
 
-        // Create command
-        Command command = new RefreshCommand(domain);
-
         // Execute command
-        command.execute();
+        CommandFacade
+        .getInstance()
+        .executeRefreshCommand(domain);
     }
 }

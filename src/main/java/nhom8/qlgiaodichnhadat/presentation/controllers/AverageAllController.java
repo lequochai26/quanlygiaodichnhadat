@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 
 import nhom8.qlgiaodichnhadat.command.AverageAllCommand;
+import nhom8.qlgiaodichnhadat.command.CommandFacade;
 import nhom8.qlgiaodichnhadat.domain.IGiaoDichManager;
 import nhom8.qlgiaodichnhadat.pattern.command.Command;
 import nhom8.qlgiaodichnhadat.presentation.views.MainWindow;
@@ -25,10 +26,7 @@ public class AverageAllController implements ActionListener {
         // Get domain
         IGiaoDichManager domain = mainWindow.getDomain();
 
-        // Create command
-        Command command = new AverageAllCommand(mainWindow, domain);
-
-        // Execute command
-        command.execute();
+        // Execute average all command
+        CommandFacade.getInstance().executeAverageAllCommand(mainWindow, domain);
     }
 }

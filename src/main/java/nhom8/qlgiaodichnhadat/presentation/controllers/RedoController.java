@@ -3,6 +3,7 @@ package nhom8.qlgiaodichnhadat.presentation.controllers;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import nhom8.qlgiaodichnhadat.command.CommandFacade;
 import nhom8.qlgiaodichnhadat.command.RedoCommand;
 import nhom8.qlgiaodichnhadat.memento.CareTaker;
 import nhom8.qlgiaodichnhadat.memento.GDMMemento;
@@ -28,10 +29,9 @@ public class RedoController implements ActionListener {
         // Get care taker
         CareTaker<GDMMemento> careTaker = mainWindow.getDomainCareTaker();
 
-        // Create command
-        Command command = new RedoCommand(originator, careTaker);
-
         // Execute command
-        command.execute();
+        CommandFacade
+        .getInstance()
+        .executeRedoCommand(originator, careTaker);
     }
 }

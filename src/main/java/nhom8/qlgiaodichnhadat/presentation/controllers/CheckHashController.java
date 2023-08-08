@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import nhom8.qlgiaodichnhadat.command.CheckHashCommand;
+import nhom8.qlgiaodichnhadat.command.CommandFacade;
 import nhom8.qlgiaodichnhadat.pattern.command.Command;
 import nhom8.qlgiaodichnhadat.presentation.views.MainWindow;
 import nhom8.qlgiaodichnhadat.presentation.views.objectgetters.ObjectGetter;
@@ -26,10 +27,9 @@ public class CheckHashController implements ActionListener {
         // Get target object
         Object target = getter.getObject();
 
-        // Create command
-        Command command = new CheckHashCommand(mainWindow, target);
-
         // Execute command
-        command.execute();
+        CommandFacade
+        .getInstance()
+        .executeCheckHashCommand(mainWindow, target);
     }
 }

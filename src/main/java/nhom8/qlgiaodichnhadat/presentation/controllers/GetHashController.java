@@ -3,6 +3,7 @@ package nhom8.qlgiaodichnhadat.presentation.controllers;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import nhom8.qlgiaodichnhadat.command.CommandFacade;
 import nhom8.qlgiaodichnhadat.command.GetHashCommand;
 import nhom8.qlgiaodichnhadat.domain.IGiaoDichManager;
 import nhom8.qlgiaodichnhadat.pattern.command.Command;
@@ -27,10 +28,9 @@ public class GetHashController implements ActionListener {
         // Get target object
         Object target = getter.getObject();
 
-        // Create command
-        Command command = new GetHashCommand(mainWindow, target);
-
-        // Execute command
-        command.execute();
+        // Execut command
+        CommandFacade
+        .getInstance()
+        .executeGetHashCommand(mainWindow, target);
     }
 }

@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+import nhom8.qlgiaodichnhadat.command.CommandFacade;
 import nhom8.qlgiaodichnhadat.command.SearchByTypeCommand;
 import nhom8.qlgiaodichnhadat.domain.IGiaoDichManager;
 import nhom8.qlgiaodichnhadat.pattern.command.Command;
@@ -26,10 +27,9 @@ public class SearchByTypeController implements ActionListener {
         // Get domain
         IGiaoDichManager domain = mainWindow.getDomain();
 
-        // Create command
-        Command command = new SearchByTypeCommand(domain, type);
-
         // Execute command
-        command.execute();
+        CommandFacade
+        .getInstance()
+        .executeSearchByTypeCommand(domain, type);
     }
 }

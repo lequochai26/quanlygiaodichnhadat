@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+import nhom8.qlgiaodichnhadat.command.CommandFacade;
 import nhom8.qlgiaodichnhadat.command.SaveCommand;
 import nhom8.qlgiaodichnhadat.domain.IGiaoDichManager;
 import nhom8.qlgiaodichnhadat.domain.entities.GiaoDich;
@@ -41,10 +42,9 @@ public class SaveController implements ActionListener {
         // Get domain care taker
         CareTaker<GDMMemento> careTaker = mainWindow.getDomainCareTaker();
 
-        // Create command
-        Command command = new SaveCommand(domain, giaoDich, originator, careTaker);
-
         // Execute command
-        command.execute();
+        CommandFacade
+        .getInstance()
+        .executeSaveCommand(domain, giaoDich, originator, careTaker);
     }
 }
