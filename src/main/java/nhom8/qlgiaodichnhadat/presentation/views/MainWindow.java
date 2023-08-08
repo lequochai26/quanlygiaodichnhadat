@@ -26,8 +26,8 @@ import javax.swing.JSpinner;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import nhom8.qlgiaodichnhadat.domain.GiaoDichManager;
 import nhom8.qlgiaodichnhadat.domain.IGiaoDichManager;
+import nhom8.qlgiaodichnhadat.domain.GiaoDichManager;
 import nhom8.qlgiaodichnhadat.domain.entities.GiaoDich;
 import nhom8.qlgiaodichnhadat.domain.entities.GiaoDichDat;
 import nhom8.qlgiaodichnhadat.domain.entities.GiaoDichNha;
@@ -707,7 +707,7 @@ public class MainWindow extends JFrame implements GUI, PropertyChangeListener {
         // Load data
         domain.getAllGiaoDichs();
 
-        // Save first memento
+        // Save domain's first memento
         domainCareTaker.addDone(
             domainOriginator.saveMemento()
         );

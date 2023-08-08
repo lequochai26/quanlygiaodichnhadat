@@ -5,24 +5,29 @@ import java.util.Date;
 import java.util.List;
 
 import nhom8.qlgiaodichnhadat.domain.entities.GiaoDich;
-import nhom8.qlgiaodichnhadat.domain.entities.GiaoDichDat;
-import nhom8.qlgiaodichnhadat.domain.entities.GiaoDichNha;
 import nhom8.qlgiaodichnhadat.hash.ObjectHasher;
 import nhom8.qlgiaodichnhadat.hash.SHA256ObjectHasher;
 import nhom8.qlgiaodichnhadat.memento.CareTaker;
 import nhom8.qlgiaodichnhadat.memento.GDMMemento;
 import nhom8.qlgiaodichnhadat.memento.Originator;
-import nhom8.qlgiaodichnhadat.notifiers.ErrorNotifier;
-import nhom8.qlgiaodichnhadat.notifiers.Notifier;
+import nhom8.qlgiaodichnhadat.objectconverter.GiaoDichConverter;
+import nhom8.qlgiaodichnhadat.objectconverter.GiaoDichDataListConverter;
+import nhom8.qlgiaodichnhadat.objectconverter.GiaoDichListConverter;
+import nhom8.qlgiaodichnhadat.objectconverter.ListArrayConverter;
+import nhom8.qlgiaodichnhadat.objectconverter.ObjectConverter;
 import nhom8.qlgiaodichnhadat.pattern.observer.Subject;
-import nhom8.qlgiaodichnhadat.persistence.IGiaoDichDBHandler;
-import nhom8.qlgiaodichnhadat.persistence.dto.GiaoDichData;
 import nhom8.qlgiaodichnhadat.persistence.GiaoDichDBHandler;
 import nhom8.qlgiaodichnhadat.persistence.HibernateGiaoDichDAO;
+import nhom8.qlgiaodichnhadat.persistence.IGiaoDichDBHandler;
+import nhom8.qlgiaodichnhadat.persistence.dto.GiaoDichData;
 
 public class GiaoDichManager extends Subject implements IGiaoDichManager, Originator<GDMMemento> {
     // FIELDS:
     private IGiaoDichDBHandler dbHandler;
+
+    private ObjectConverter<GiaoDich,GiaoDichData> giaoDichConverter;
+    private ObjectConverter<List<GiaoDich>,GiaoDich[]> giaoDichListConverter;
+    private ObjectConverter<List<GiaoDichData>,GiaoDichData[]> giaoDichDataListConverter;
 
     private CareTaker<GDMMemento> careTaker;
 
@@ -33,66 +38,79 @@ public class GiaoDichManager extends Subject implements IGiaoDichManager, Origin
         // Inherit from super class's default constructor
         super();
 
-        // DBHandler initialization
+        // dbHandler initialization
         dbHandler = new GiaoDichDBHandler(
             new HibernateGiaoDichDAO()
         );
 
-        // Care taker initialization
+        // careTaker initialization
         careTaker = new CareTaker<GDMMemento>();
+
+        // Converters initialization
+        giaoDichConverter = GiaoDichConverter.getInstance();
+        giaoDichListConverter = GiaoDichListConverter.getInstance();
+        giaoDichDataListConverter = GiaoDichDataListConverter.getInstance();
     }
 
     // METHODS:
     @Override
     public void saveGiaoDichs(GiaoDich... giaoDichs) {
-        // Pack giaoDichs into a list
-        List<GiaoDich> giaoDichList = new ArrayList<GiaoDich>();
+        // Create a list of GiaoDichData objects
+        List<GiaoDichData> dataList = new ArrayList<GiaoDichData>();
+
+        // Data getting
         for (GiaoDich giaoDich : giaoDichs) {
-            giaoDichList.add(giaoDich);
+            dataList.add(
+                giaoDich.getData()
+            );
         }
 
-        // Create a list of data
-        List<GiaoDichData> dataList = this.packDatas(giaoDichList);
+        // Converter dataList into data array
+        GiaoDichData[] data = giaoDichDataListConverter.convert(dataList);
 
-        // Get array of data
-        GiaoDichData[] data = new GiaoDichData[]{};
-        data = dataList.toArray(data);
-
-        // Save data
+        // Save
         dbHandler.saveGiaoDichs(data);
     }
 
     @Override
     public void removeGiaoDichs(GiaoDich... giaoDichs) {
-        // Pack giaoDichs into a list of GiaoDich objects
-        List<GiaoDich> giaoDichList = new ArrayList<GiaoDich>();
-        for (GiaoDich giaoDich: giaoDichs) {
-            giaoDichList.add(giaoDich);
+        // Create a list of GiaoDichData objects
+        List<GiaoDichData> dataList = new ArrayList<GiaoDichData>();
+
+        // Data getting
+        for (GiaoDich giaoDich : giaoDichs) {
+            dataList.add(
+                giaoDich.getData()
+            );
         }
-        
-        // Create a list of data
-        List<GiaoDichData> dataList = this.packDatas(giaoDichList);
 
-        // Get array of data
-        GiaoDichData[] data = new GiaoDichData[]{};
-        data = dataList.toArray(data);
+        // Convert dataList in to an array
+        GiaoDichData[] data = giaoDichDataListConverter.convert(dataList);
 
-        // Remove data
+        // Remove
         dbHandler.removeGiaoDichs(data);
     }
 
     @Override
     public List<GiaoDich> getAllGiaoDichs() {
         // Load data
-        List data = dbHandler.getAllGiaoDichs();
+        List<GiaoDichData> datas = dbHandler.getAllGiaoDichs();
 
-        // Check data null
-        if (data == null) {
+        // Check if datas null
+        if (datas == null) {
             return null;
         }
 
-        // Load GiaoDich objects from data
-        List<GiaoDich> giaoDichs = this.loadGiaoDichs(data);
+        // Create a list of GiaoDich objects
+        List<GiaoDich> giaoDichs = new ArrayList<GiaoDich>();
+
+        // Convert datas into giaoDichs
+        for (GiaoDichData data : datas) {
+            // Convert data to GiaoDich object and add into giaoDichs
+            giaoDichs.add(
+                giaoDichConverter.reverse(data)
+            );
+        }
 
         // Set data
         this.setData(giaoDichs);
@@ -102,206 +120,186 @@ public class GiaoDichManager extends Subject implements IGiaoDichManager, Origin
     }
 
     @Override
-    public List getGiaoDichsByKeyWord(String keyWord) {
+    public List<GiaoDich> getGiaoDichsByKeyWord(String keyWord) {
         // Load data
-        List data = dbHandler.getAllGiaoDichs();
+        List<GiaoDichData> datas = dbHandler.getAllGiaoDichs();
 
-        // List of GiaoDich objects declaration
-        List<GiaoDich> giaoDichs = null;
-
-        // Check data null
-        if (data != null) {
-            // Load GiaoDich objects from data
-            giaoDichs = this.loadGiaoDichs(data);
-
-            // Create a remove list
-            List<GiaoDich> removeList = new ArrayList<GiaoDich>();
-
-            // Filtering data
-            for (GiaoDich giaoDich : giaoDichs) {
-                // Check if giaoDich matches to keyWord
-                if (giaoDich.matches(keyWord)) {
-                    continue;
-                }
-
-                // Otherwise
-                // Add this giaoDich into removeList
-                removeList.add(giaoDich);
-            }
-
-            // Remove all objects in removeList from data
-            for (GiaoDich giaoDich : removeList) {
-                giaoDichs.remove(giaoDich);
-            }
-
-            // Set data
-            this.setData(giaoDichs);
+        // Check datas null
+        if (datas == null) {
+            return null;
         }
+
+        // Create a list of GiaoDich objects
+        List<GiaoDich> giaoDichs = new ArrayList<GiaoDich>();
+
+        // Converting and filtering
+        for (GiaoDichData data : datas) {
+            // Convert data into giao dich
+            GiaoDich giaoDich = giaoDichConverter.reverse(data);
+
+            // Bypass if giao dich not matches to keyword
+            if (!giaoDich.matches(keyWord)) {
+                continue;
+            }
+
+            // Otherwise
+            // Add giao dich into giaoDichs
+            giaoDichs.add(giaoDich);
+        }
+
+        // Set data
+        this.setData(giaoDichs);
 
         // Return
         return giaoDichs;
     }
 
     @Override
-    public List getGiaoDichsByType(Class type) {
+    public List<GiaoDich> getGiaoDichsByType(Class type) {
         // Load data
-        List data = dbHandler.getAllGiaoDichs();
+        List<GiaoDichData> datas = dbHandler.getAllGiaoDichs();
 
-        // List of GiaoDich objects declaration
-        List<GiaoDich> giaoDichs = null;
-
-        // Check data null
-        if (data != null) {
-            // Get list of GiaoDich objects from data
-            giaoDichs = this.loadGiaoDichs(data);
-
-            // Create a removeList
-            List<GiaoDich> removeList = new ArrayList<GiaoDich>();
-
-            // Filtering data
-            for (GiaoDich giaoDich : giaoDichs) {
-                // Check if giaoDich's type is matches to type
-                if (giaoDich.getClass() == type) {
-                    continue;
-                }
-
-                // Otherwise
-                // Add giaoDich into removeList
-                removeList.add(giaoDich);
-            }
-
-            // Remove all objects in removeList from giaoDichs
-            for (GiaoDich giaoDich : removeList) {
-                giaoDichs.remove(giaoDich);
-            }
-
-            // Set data
-            this.setData(giaoDichs);
+        // Check datas null
+        if (datas == null) {
+            return null;
         }
+
+        // Create a list of GiaoDich objects
+        List<GiaoDich> giaoDichs = new ArrayList<GiaoDich>();
+
+        // Converting and filtering
+        for (GiaoDichData data : datas) {
+            // Convert data into giao dich object
+            GiaoDich giaoDich = giaoDichConverter.reverse(data);
+
+            // Bypass if not match type
+            if (giaoDich.getClass() != type) {
+                continue;
+            }
+
+            // Otherwise
+            // Add giao dich into giaoDichs
+            giaoDichs.add(giaoDich);
+        }
+
+        // Set data
+        this.setData(giaoDichs);
 
         // Return
         return giaoDichs;
     }
 
     @Override
-    public List getGiaoDichsInRangeOfDate(Date start, Date end) {
+    public List<GiaoDich> getGiaoDichsInRangeOfDate(Date start, Date end) {
         // Load data
-        List data = dbHandler.getAllGiaoDichs();
+        List<GiaoDichData> datas = dbHandler.getAllGiaoDichs();
 
-        // List of GiaoDich objects declaration
-        List<GiaoDich> giaoDichs = null;
-
-        // Check data null
-        if (data != null) {
-            // Load GiaoDich objects from data
-            giaoDichs = this.loadGiaoDichs(data);
-
-            // Create a remove list
-            List<GiaoDich> removeList = new ArrayList<GiaoDich>();
-
-            // Filtering
-            for (GiaoDich giaoDich : giaoDichs) {
-                // Get giaoDich's ngayGiaoDich
-                Date ngayGiaoDich = giaoDich.getNgayGiaoDich();
-
-                // Check if ngayGiaoDich in range of start date and end date
-                if
-                (
-                    ngayGiaoDich.compareTo(start) >= 0
-                    &&
-                    ngayGiaoDich.compareTo(end) <= 0
-                ) {
-                    continue;
-                }
-
-                // Add giaoDich into removeList
-                removeList.add(giaoDich);
-            }
-
-            // Remove all GiaoDich objects in removeList from giaoDichs
-            for (GiaoDich giaoDich : removeList) {
-                giaoDichs.remove(giaoDich);
-            }
-
-            // Set data
-            this.setData(giaoDichs);
+        // Check datas null
+        if (datas == null) {
+            return null;
         }
-        
+
+        // Creat a list of giao dich objects
+        List<GiaoDich> giaoDichs = new ArrayList<GiaoDich>();
+
+        // Converting and filtering
+        for (GiaoDichData data : datas) {
+            // Convert data into giao dich object
+            GiaoDich giaoDich = giaoDichConverter.reverse(data);
+
+            // Get ngay giao dich
+            Date ngayGiaoDich = giaoDich.getNgayGiaoDich();
+
+            // Bypass if giaoDich not in range of date
+            if (ngayGiaoDich.compareTo(start) < 0 ||
+            ngayGiaoDich.compareTo(end) > 0) {
+                continue;
+            }
+
+            // Add giao dich into giaoDichs
+            giaoDichs.add(giaoDich);
+        }
+
+        // Set data
+        this.setData(giaoDichs);
+
         // Return
         return giaoDichs;
     }
 
     @Override
     public GiaoDich getGiaoDich(int maGiaoDich) {
-        // Get target data
-        GiaoDichData targetData = dbHandler.getGiaoDich(maGiaoDich);
-        
+        // Get data
+        GiaoDichData data = dbHandler.getGiaoDich(maGiaoDich);
+
         // Target declaration
         GiaoDich target = null;
+        
+        // Check data null
+        if (data != null) {
+            // Convert data into giao dich object and assign into target
+            target = giaoDichConverter.reverse(data);
+        }
 
-        // List of GiaoDich objects initialization
+        // Create a list of GiaoDich objects
         List<GiaoDich> giaoDichs = new ArrayList<GiaoDich>();
 
-        // Check targetData
-        if (targetData != null) {
-            // Load GiaoDich object
-            target = this.loadGiaoDich(targetData);
-
-            // Add target into giaoDichs
+        // If found target, add target into giaoDichs
+        if (target != null) {
             giaoDichs.add(target);
         }
 
         // Set data
         this.setData(giaoDichs);
 
-        // Return target
+        // Return
         return target;
     }
 
     @Override
     public GiaoDich getGiaoDich(String hash) {
+        // Load data
+        List<GiaoDichData> datas = dbHandler.getAllGiaoDichs();
+
+        // Check datas null
+        if (datas == null) {
+            return null;
+        }
+
         // Target declaration
         GiaoDich target = null;
 
-        // Load data
-        List data = dbHandler.getAllGiaoDichs();
+        // Get hasher
+        ObjectHasher hasher = SHA256ObjectHasher.getInstance();
 
-        // Check data null
-        if (data != null) {
-            // Get hasher
-            ObjectHasher hasher = SHA256ObjectHasher.getInstance();
+        // Detecting
+        for (GiaoDichData data : datas) {
+            // Convert data into giao dich object
+            GiaoDich giaoDich = giaoDichConverter.reverse(data);
 
-            // Get a List of GiaoDich objects from data
-            List<GiaoDich> giaoDichs = this.loadGiaoDichs(data);
+            // Hash giao dich
+            String giaoDichHash = hasher.hashObject(giaoDich);
 
-            // Filtering
-            for (GiaoDich giaoDich : giaoDichs) {
-                // Hash giaoDich
-                String giaoDichHash = hasher.hashObject(giaoDich);
-
-                // Check if giaoDichHash is different from hash
-                if (!giaoDichHash.equals(hash)) {
-                    continue;
-                }
-
-                // Assign giaoDich into target
-                target = giaoDich;
-
-                // Break
-                break;
+            // Bypass if hashs different from each other
+            if (!giaoDichHash.equals(hash)) {
+                continue;
             }
+
+            // Otherwise, found target
+            target = giaoDich;
+            break;
         }
 
-        // Filtered data initialization
-        List<GiaoDich> filteredData = new ArrayList<GiaoDich>();
+        // Create a list of GiaoDich objects
+        List<GiaoDich> giaoDichs = new ArrayList<GiaoDich>();
 
-        // Check and add target into filteredData
+        // Add target into giaoDichs if target found
         if (target != null) {
-            filteredData.add(target);
+            giaoDichs.add(target);
         }
 
         // Set data
-        this.setData(filteredData);
+        this.setData(giaoDichs);
 
         // Return
         return target;
@@ -309,33 +307,32 @@ public class GiaoDichManager extends Subject implements IGiaoDichManager, Origin
 
     @Override
     public int countAllGiaoDichs() {
-        // Count default definition
-        int count = 0;
-
         // Get all
-        List all = this.getAllGiaoDichs();
+        List<GiaoDich> all = this.getAllGiaoDichs();
 
-        // Check all
-        if (all != null) {
-            count = all.size();
+        // Check all null
+        if (all == null) {
+            return 0;
         }
 
-        // Return
+        // Get count
+        int count = all.size();
+
         return count;
     }
 
     @Override
     public int countGiaoDichsByType(Class type) {
-        // Count default initialization
-        int count = 0;
+        // Get giao dich objects by type
+        List<GiaoDich> giaoDichs = this.getGiaoDichsByType(type);
 
-        // Get by type
-        List giaoDichs = this.getGiaoDichsByType(type);
-
-        // Check giaoDichs and get count
-        if (giaoDichs != null) {
-            count = giaoDichs.size();
+        // Check giaoDichs null
+        if (giaoDichs == null) {
+            return 0;
         }
+
+        // Get count
+        int count = giaoDichs.size();
 
         // Return
         return count;
@@ -343,48 +340,73 @@ public class GiaoDichManager extends Subject implements IGiaoDichManager, Origin
 
     @Override
     public double averageThanhTienAll() {
-        // Result default definition
+        // Get all
+        List<GiaoDich> all = this.getAllGiaoDichs();
+
+        // Check all null
+        if (all == null) {
+            return 0;
+        }
+
+        // Result definition
         double result = 0;
 
-        // Get all
-        List all = this.getAllGiaoDichs();
-
-        // Check all
-        if (all != null) {
-            // Calculating
-            for (Object obj : all) {
-                GiaoDich giaoDich = (GiaoDich)obj;
-                result += giaoDich.tinhThanhTien();
-            }
-
-            result /= all.size();
+        // Calculating
+        for (GiaoDich giaoDich : all) {
+            result += giaoDich.tinhThanhTien();
         }
-        
+        result /= all.size();
+
         // Return
         return result;
     }
 
     @Override
     public double averageThanhTienByType(Class type) {
-        // Result default definition
+        // Get giao dich objects by type
+        List<GiaoDich> giaoDichs = this.getGiaoDichsByType(type);
+
+        // Check giaoDichs null
+        if (giaoDichs == null) {
+            return 0;
+        }
+
+        // Result definition
         double result = 0;
 
-        // Get GiaoDichs by type
-        List giaoDichs = this.getGiaoDichsByType(type);
-
-        // Check giaoDichs
-        if (giaoDichs != null) {
-            // Calculating
-            for (Object obj : giaoDichs) {
-                GiaoDich giaoDich = (GiaoDich)obj;
-                result += giaoDich.tinhThanhTien();
-            }
-
-            result /= giaoDichs.size();
+        // Calculating
+        for (GiaoDich giaoDich : giaoDichs) {
+            result += giaoDich.tinhThanhTien();
         }
+        result /= giaoDichs.size();
 
         // Return
         return result;
+    }
+
+    @Override
+    public void applyMemento(GDMMemento memento) {
+        // Get data
+        List<GiaoDich> giaoDichs = memento.getData();
+
+        // Clear database's data
+        dbHandler.clearGiaoDichs();
+
+        // Convert giao dich objects into data objects
+        List<GiaoDichData> datas = new ArrayList<GiaoDichData>();
+        for (GiaoDich giaoDich : giaoDichs) {
+            datas.add(
+                giaoDichConverter.convert(giaoDich)
+            );
+        }
+
+        // Save data
+        dbHandler.saveGiaoDichs(
+            giaoDichDataListConverter.convert(datas)
+        );
+
+        // Set data
+        this.setData(giaoDichs);
     }
 
     @Override
@@ -392,114 +414,10 @@ public class GiaoDichManager extends Subject implements IGiaoDichManager, Origin
         return new GDMMemento(data);
     }
 
-    @Override
-    public void applyMemento(GDMMemento memento) {
-        // Clear db
-        dbHandler.clearGiaoDichs();
-
-        // Get memento's data
-        List<GiaoDich> giaoDichs = memento.getData();
-
-        // Pack giaoDichs into data
-        List<GiaoDichData> data = this.packDatas(giaoDichs);
-        GiaoDichData[] arrData = new GiaoDichData[]{};
-        arrData = data.toArray(arrData);
-
-        // Save giaoDichs
-        dbHandler.saveGiaoDichs(arrData);
-
-        // Set data
-        this.setData(giaoDichs);
-    }
-
-    private List<GiaoDich> loadGiaoDichs(List data) {
-        // List of GiaoDich objects initialization
-        List<GiaoDich> giaoDichs = new ArrayList<GiaoDich>();
-
-        // Loading
-        for (Object obj : data) {
-            GiaoDichData giaoDichData = (GiaoDichData)obj;
-
-            GiaoDich giaoDich = null;
-
-            Class loaiGiaoDich = null;
-
-            try {
-                loaiGiaoDich = Class.forName(giaoDichData.getLoaiGiaoDich());
-            }
-            catch (Exception e) {
-                continue;
-            }
-
-            if (loaiGiaoDich == GiaoDichDat.class) {
-                giaoDich = new GiaoDichDat();
-            }
-            else {
-                giaoDich = new GiaoDichNha();
-            }
-
-            giaoDich.loadData(giaoDichData);
-
-            giaoDichs.add(giaoDich);
-        }
-
-        // Return
-        return giaoDichs;
-    }
-
-    private GiaoDich loadGiaoDich(GiaoDichData data) {
-        GiaoDich giaoDich = null;
-
-        Class loaiGiaoDich = null;
-
-        try {
-            loaiGiaoDich = Class.forName(data.getLoaiGiaoDich());
-        }
-        catch (Exception e) {
-            return giaoDich;
-        }
-
-        if (loaiGiaoDich == GiaoDichDat.class) {
-            giaoDich = new GiaoDichDat();
-        }
-        else {
-            giaoDich = new GiaoDichNha();
-        }
-
-        giaoDich.loadData(data);
-
-        return giaoDich;
-    }
-
-    private List<GiaoDichData> packDatas(List<GiaoDich> giaoDichs) {
-        // List of GiaoDichData objects initialization
-        List<GiaoDichData> datas = new ArrayList<GiaoDichData>();
-
-        // Packing
-        for (GiaoDich giaoDich : giaoDichs) {
-            datas.add(
-                giaoDich.getData()
-            );
-        }
-
-        // Return
-        return datas;
-    }
-    
-    public void setData(List data) {
-        // Check data null
-        if (data == null) {
-            return;
-        }
-
-        // oldValue, newValue definition
-        List newValue = data;
-        List oldValue = this.data;
-
-        // Update data
+    public void setData(List<GiaoDich> data) {
+        List<GiaoDich> oldValue = this.data;
+        List<GiaoDich> newValue = data;
         this.data = newValue;
-
-        // Fire property change
         this.firePropertyChange(
             "data",
             newValue,

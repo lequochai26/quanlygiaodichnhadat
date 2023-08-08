@@ -8,10 +8,10 @@ import nhom8.qlgiaodichnhadat.domain.entities.GiaoDich;
 public interface IGiaoDichManager {
     void saveGiaoDichs(GiaoDich... giaoDichs);
     void removeGiaoDichs(GiaoDich... giaoDichs);
-    List getAllGiaoDichs();
-    List getGiaoDichsByKeyWord(String keyWord);
-    List getGiaoDichsByType(Class type);
-    List getGiaoDichsInRangeOfDate(Date start, Date end);
+    List<GiaoDich> getAllGiaoDichs();
+    List<GiaoDich> getGiaoDichsByKeyWord(String keyWord);
+    List<GiaoDich> getGiaoDichsByType(Class type);
+    List<GiaoDich> getGiaoDichsInRangeOfDate(Date start, Date end);
     GiaoDich getGiaoDich(int maGiaoDich);
     GiaoDich getGiaoDich(String hash);
     int countAllGiaoDichs();

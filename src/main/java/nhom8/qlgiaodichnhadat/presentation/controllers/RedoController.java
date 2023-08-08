@@ -4,10 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import nhom8.qlgiaodichnhadat.command.RedoCommand;
-import nhom8.qlgiaodichnhadat.domain.GiaoDichManager;
-import nhom8.qlgiaodichnhadat.domain.IGiaoDichManager;
 import nhom8.qlgiaodichnhadat.memento.CareTaker;
 import nhom8.qlgiaodichnhadat.memento.GDMMemento;
+import nhom8.qlgiaodichnhadat.memento.Originator;
 import nhom8.qlgiaodichnhadat.pattern.command.Command;
 import nhom8.qlgiaodichnhadat.presentation.views.MainWindow;
 
@@ -23,22 +22,14 @@ public class RedoController implements ActionListener {
     // METHODS:
     @Override
     public void actionPerformed(ActionEvent e) {
-        // Get domain
-        IGiaoDichManager domain = mainWindow.getDomain();
-
-        // Check domain instance of GiaoDichManager
-        if (!(domain instanceof GiaoDichManager)) {
-            return;
-        }
-
-        // Cast domain to GiaoDichManager
-        GiaoDichManager gdManager = (GiaoDichManager)domain;
+        // Get originator
+        Originator<GDMMemento> originator = mainWindow.getDomainOriginator();
 
         // Get care taker
-        CareTaker<GDMMemento> careTaker = gdManager.getCareTaker();
-        
+        CareTaker<GDMMemento> careTaker = mainWindow.getDomainCareTaker();
+
         // Create command
-        Command command = new RedoCommand(gdManager, careTaker);
+        Command command = new RedoCommand(originator, careTaker);
 
         // Execute command
         command.execute();

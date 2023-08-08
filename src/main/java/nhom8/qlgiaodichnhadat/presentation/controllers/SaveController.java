@@ -8,6 +8,7 @@ import nhom8.qlgiaodichnhadat.command.SaveCommand;
 import nhom8.qlgiaodichnhadat.domain.IGiaoDichManager;
 import nhom8.qlgiaodichnhadat.domain.entities.GiaoDich;
 import nhom8.qlgiaodichnhadat.memento.CareTaker;
+import nhom8.qlgiaodichnhadat.memento.GDMMemento;
 import nhom8.qlgiaodichnhadat.memento.Originator;
 import nhom8.qlgiaodichnhadat.pattern.command.Command;
 import nhom8.qlgiaodichnhadat.presentation.views.MainWindow;
@@ -35,10 +36,10 @@ public class SaveController implements ActionListener {
         IGiaoDichManager domain = mainWindow.getDomain();
 
         // Get domain originator
-        Originator originator = mainWindow.getDomainOriginator();
+        Originator<GDMMemento> originator = mainWindow.getDomainOriginator();
 
         // Get domain care taker
-        CareTaker careTaker = mainWindow.getDomainCareTaker();
+        CareTaker<GDMMemento> careTaker = mainWindow.getDomainCareTaker();
 
         // Create command
         Command command = new SaveCommand(domain, giaoDich, originator, careTaker);
