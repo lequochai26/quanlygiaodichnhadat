@@ -3,6 +3,7 @@ package nhom8.qlgiaodichnhadat.persistence;
 import java.util.List;
 
 import nhom8.qlgiaodichnhadat.domain.entities.GiaoDich;
+import nhom8.qlgiaodichnhadat.persistence.dao.GiaoDichDAO;
 import nhom8.qlgiaodichnhadat.persistence.dto.GiaoDichData;
 
 public class GiaoDichDBHandler implements IGiaoDichDBHandler {

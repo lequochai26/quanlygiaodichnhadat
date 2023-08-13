@@ -1,4 +1,4 @@
-package nhom8.qlgiaodichnhadat.persistence;
+package nhom8.qlgiaodichnhadat.persistence.dao;
 
 import java.util.List;
 
@@ -9,5 +9,5 @@ public interface GiaoDichDAO {
     void removeGiaoDichs(GiaoDichData...giaoDichs);
     void clearGiaoDichs();
     GiaoDichData getGiaoDich(int maGiaoDich);
-    List getAllGiaoDichs();
+    List<GiaoDichData> getAllGiaoDichs();
 }

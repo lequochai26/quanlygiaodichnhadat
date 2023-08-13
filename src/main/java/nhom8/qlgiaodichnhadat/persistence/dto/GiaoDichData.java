@@ -1,5 +1,6 @@
 package nhom8.qlgiaodichnhadat.persistence.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -9,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity (name = "GiaoDich")
 @Table (name = "GiaoDich")
-public class GiaoDichData {
+public class GiaoDichData implements Serializable {
     // FIELDS:
     @Column (name = "loaiGiaoDich")
     private String loaiGiaoDich;

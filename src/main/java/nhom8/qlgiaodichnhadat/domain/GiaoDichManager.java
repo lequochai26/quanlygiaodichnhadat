@@ -1,5 +1,6 @@
 package nhom8.qlgiaodichnhadat.domain;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,8 +18,9 @@ import nhom8.qlgiaodichnhadat.objectconverter.ListArrayConverter;
 import nhom8.qlgiaodichnhadat.objectconverter.ObjectConverter;
 import nhom8.qlgiaodichnhadat.pattern.observer.Subject;
 import nhom8.qlgiaodichnhadat.persistence.GiaoDichDBHandler;
-import nhom8.qlgiaodichnhadat.persistence.HibernateGiaoDichDAO;
 import nhom8.qlgiaodichnhadat.persistence.IGiaoDichDBHandler;
+import nhom8.qlgiaodichnhadat.persistence.dao.FileGiaoDichDAO;
+import nhom8.qlgiaodichnhadat.persistence.dao.HibernateGiaoDichDAO;
 import nhom8.qlgiaodichnhadat.persistence.dto.GiaoDichData;
 
 public class GiaoDichManager extends Subject implements IGiaoDichManager, Originator<GDMMemento> {
@@ -40,7 +42,9 @@ public class GiaoDichManager extends Subject implements IGiaoDichManager, Origin
 
         // dbHandler initialization
         dbHandler = new GiaoDichDBHandler(
-            new HibernateGiaoDichDAO()
+            new FileGiaoDichDAO(
+                new File("data")
+            )
         );
 
         // careTaker initialization

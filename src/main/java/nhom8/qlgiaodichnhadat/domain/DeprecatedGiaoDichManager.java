@@ -16,9 +16,9 @@ import nhom8.qlgiaodichnhadat.notifiers.ErrorNotifier;
 import nhom8.qlgiaodichnhadat.notifiers.Notifier;
 import nhom8.qlgiaodichnhadat.pattern.observer.Subject;
 import nhom8.qlgiaodichnhadat.persistence.IGiaoDichDBHandler;
+import nhom8.qlgiaodichnhadat.persistence.dao.HibernateGiaoDichDAO;
 import nhom8.qlgiaodichnhadat.persistence.dto.GiaoDichData;
 import nhom8.qlgiaodichnhadat.persistence.GiaoDichDBHandler;
-import nhom8.qlgiaodichnhadat.persistence.HibernateGiaoDichDAO;
 
 @Deprecated
 public class DeprecatedGiaoDichManager extends Subject implements IGiaoDichManager, Originator<GDMMemento> {

@@ -1,4 +1,4 @@
-package nhom8.qlgiaodichnhadat.persistence;
+package nhom8.qlgiaodichnhadat.persistence.dao;
 
 import java.util.List;
 
@@ -271,9 +271,9 @@ public class HibernateGiaoDichDAO implements GiaoDichDAO {
     }
 
     @Override
-    public List getAllGiaoDichs() {
+    public List<GiaoDichData> getAllGiaoDichs() {
         // Result declaration
-        List result = null;
+        List<GiaoDichData> result = null;
 
         // Check session factory
         if (sessionFactory == null) {
